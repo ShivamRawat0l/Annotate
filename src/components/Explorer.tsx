@@ -44,10 +44,12 @@ import {
 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Input } from "@/components/ui/input";
+import { Colors } from "../context/Colors";
+import { getTheme, useTheme } from "@/components/theme-provider";
 
 const RightClickMenu = () => {
   return (
-    <ContextMenuContent>
+    <ContextMenuContent className="w-64">
       <ContextMenuItem>
         Create Folder
         <ContextMenuShortcut>⇧A</ContextMenuShortcut>
@@ -63,6 +65,10 @@ const RightClickMenu = () => {
       <ContextMenuItem>
         Delete
         <ContextMenuShortcut>⇧D</ContextMenuShortcut>
+      </ContextMenuItem>
+      <ContextMenuItem>
+        Toggle Expand
+        <ContextMenuShortcut>⇧T</ContextMenuShortcut>
       </ContextMenuItem>
       <ContextMenuItem>Info</ContextMenuItem>
       <ContextMenuItem>Copy Url</ContextMenuItem>
@@ -89,26 +95,31 @@ const Explorer = () => {
   const { data, setData, setSelectedNote } = useFolder();
   const [folderSelected, setFolderSelected] = useState<FolderType | null>(null);
   const [folderEditing, setFolderEditing] = useState<string | null>(null);
-
+  const theme = getTheme();
   useEffect(() => {
-    shortcuts();
+    addShortcutEvent();
     return () => {
       document.removeEventListener("keydown", shortcuts);
     };
   }, [folderSelected]);
 
-  const shortcuts = () => {
-    document.addEventListener("keydown", (e) => {
-      if (e.key.toLowerCase() === "r" && e.shiftKey && folderSelected) {
-        setFolderEditing(folderSelected.id);
-      }
-      if (e.key.toLowerCase() === "a" && e.shiftKey && folderSelected) {
-        createNewFolder(folderSelected);
-      }
-      if (e.key.toLowerCase() === "n" && e.shiftKey && folderSelected) {
-        createNewNote(folderSelected);
-      }
-    });
+  const addShortcutEvent = () => {
+    document.addEventListener("keydown", shortcuts);
+  };
+
+  const shortcuts = (e: KeyboardEvent) => {
+    if (e.repeat) return;
+    if (e.key.toLowerCase() === "r" && e.shiftKey && folderSelected) {
+      setFolderEditing(folderSelected.id);
+    }
+    if (e.key.toLowerCase() === "a" && e.shiftKey && folderSelected) {
+      createNewFolder(folderSelected);
+      console.log("create new folder", folderSelected);
+    }
+    if (e.key.toLowerCase() === "n" && e.shiftKey && folderSelected) {
+      createNewNote(folderSelected);
+      console.log("create new note", folderSelected);
+    }
   };
 
   const createNewFolder = (folder?: FolderType) => {
@@ -117,6 +128,7 @@ const Explorer = () => {
       subFolders: [],
       notes: [],
       id: uuidv7(),
+      isExpanded: false,
       createdAt: new Date(),
       updatedAt: new Date(),
     };
@@ -147,57 +159,64 @@ const Explorer = () => {
       <SidebarMenuItem style={{ width: "250px" }}>
         <Collapsible
           className="group/collapsible [&[data-state=open]>button>svg:first-child]:rotate-90"
-          defaultOpen={true}
+          open={folder.isExpanded}
+          onOpenChange={(open) => {
+            folder.isExpanded = open;
+            setData([...data]);
+          }}
         >
-          <CollapsibleTrigger
-            asChild
-            onMouseOver={() => {
-              setHover(true);
-            }}
-            style={{
-              backgroundColor:
-                folderSelected?.id === folder.id ? "red" : "transparent",
-            }}
-            onMouseOut={() => setHover(false)}
-            onClick={() => setFolderSelected(folder)}
-          >
-            <ContextMenu>
-              <ContextMenuTrigger>
-                <SidebarMenuButton>
-                  <ChevronRight className="transition-transform" />
-                  <Folder />
-                  {folderEditing !== folder.id ? (
-                    title
+          <CollapsibleTrigger asChild onClick={() => setFolderSelected(folder)}>
+            <div
+              onMouseOver={() => {
+                setHover(true);
+              }}
+              // TODO: change to theme color
+              style={{
+                backgroundColor:
+                  folderSelected?.id === folder.id
+                    ? "#aaffee33"
+                    : "transparent",
+              }}
+              onMouseOut={() => setHover(false)}
+            >
+              <ContextMenu>
+                <ContextMenuTrigger>
+                  <SidebarMenuButton>
+                    <ChevronRight className="transition-transform" />
+                    <Folder />
+                    {folderEditing !== folder.id ? (
+                      title
+                    ) : (
+                      <Input
+                        autoFocus
+                        value={title}
+                        onKeyDown={(e) => {
+                          if (e.key === "Enter") {
+                            setFolderEditing(null);
+                            folder.title = title;
+                            setData([...data]);
+                          }
+                        }}
+                        onChange={(e) => {
+                          setTitle(e.target.value);
+                        }}
+                      />
+                    )}
+                  </SidebarMenuButton>
+                  {hover ? (
+                    <SidebarMenuAction>
+                      <Folder onClick={() => createNewFolder(folder)} />
+                      <NotebookPen onClick={() => createNewNote(folder)} />
+                    </SidebarMenuAction>
                   ) : (
-                    <Input
-                      autoFocus
-                      value={title}
-                      onKeyDown={(e) => {
-                        if (e.key === "Enter") {
-                          setFolderEditing(null);
-                          folder.title = title;
-                          setData([...data]);
-                        }
-                      }}
-                      onChange={(e) => {
-                        setTitle(e.target.value);
-                      }}
-                    />
+                    <SidebarMenuBadge>
+                      {folder.notes.length + folder.subFolders.length}
+                    </SidebarMenuBadge>
                   )}
-                </SidebarMenuButton>
-              </ContextMenuTrigger>
-              <RightClickMenu />
-              {hover ? (
-                <SidebarMenuAction>
-                  <Folder onClick={() => createNewFolder(folder)} />
-                  <NotebookPen onClick={() => createNewNote(folder)} />
-                </SidebarMenuAction>
-              ) : (
-                <SidebarMenuBadge>
-                  {folder.notes.length + folder.subFolders.length}
-                </SidebarMenuBadge>
-              )}
-            </ContextMenu>
+                </ContextMenuTrigger>
+                <RightClickMenu />
+              </ContextMenu>
+            </div>
           </CollapsibleTrigger>
           <CollapsibleContent>
             <SidebarMenuSub>
@@ -233,7 +252,12 @@ const Explorer = () => {
   };
 
   return (
-    <Sidebar>
+    <Sidebar
+      style={{
+        display: "flex",
+        backgroundColor: Colors[theme].background,
+      }}
+    >
       <SideBarHeaderComponent />
       <SidebarContent>
         <SidebarGroup>

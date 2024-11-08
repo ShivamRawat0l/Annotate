@@ -21,7 +21,7 @@ const Annote = ({}: Props) => {
   return (
     <div>
       {selectedNote && (
-        <div style={{ height: "800px", width: "1500px" }}>
+        <div style={{ height: "100vh", width: "100vw" }}>
           <Excalidraw
             renderTopRightUI={() => (
               <div>

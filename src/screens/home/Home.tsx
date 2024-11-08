@@ -17,10 +17,13 @@ import { useEffect, useState } from "react";
 import Annote from "./Annote";
 import type { Data, FolderType, NoteType } from "../../types/notes.type";
 import { useFolder } from "@/src/context/FolderProvider";
+import { Colors } from "@/src/context/Colors";
+import { getTheme } from "@/components/theme-provider";
+import { Toaster } from "@/components/ui/sonner";
 
 const Home = () => {
   const { data, setData } = useFolder();
-
+  const theme = getTheme();
   useEffect(() => {
     loadData();
   }, []);
@@ -51,32 +54,42 @@ const Home = () => {
     }
   };
   return (
-    <div style={styles.container}>
+    <div
+      style={{
+        height: "100vh",
+        width: "100vw",
+        backgroundColor: Colors[theme].background,
+      }}
+    >
       <SidebarTrigger />
-      <Breadcrumb>
-        <BreadcrumbList>
-          <BreadcrumbItem>
-            <BreadcrumbLink>Home</BreadcrumbLink>
-          </BreadcrumbItem>
-          <BreadcrumbSeparator />
-          <BreadcrumbItem>
-            <BreadcrumbLink>Components</BreadcrumbLink>
-          </BreadcrumbItem>
-          <BreadcrumbSeparator />
-          <BreadcrumbItem>
-            <BreadcrumbPage>Breadcrumb</BreadcrumbPage>
-          </BreadcrumbItem>
-        </BreadcrumbList>
-      </Breadcrumb>
-      <Annote />
+      <div style={styles.container}>
+        <Breadcrumb>
+          <BreadcrumbList>
+            <BreadcrumbItem>
+              <BreadcrumbLink>Home</BreadcrumbLink>
+            </BreadcrumbItem>
+            <BreadcrumbSeparator />
+            <BreadcrumbItem>
+              <BreadcrumbLink>Components</BreadcrumbLink>
+            </BreadcrumbItem>
+            <BreadcrumbSeparator />
+            <BreadcrumbItem>
+              <BreadcrumbPage>Breadcrumb</BreadcrumbPage>
+            </BreadcrumbItem>
+          </BreadcrumbList>
+        </Breadcrumb>
+        <Annote />
+      </div>
+      <Toaster />
     </div>
   );
 };
 
 const styles = {
   container: {
+    flex: 1,
     display: "flex",
-    flexDirection: "row",
+    flexDirection: "column",
     alignItems: "flex-start",
   },
   parents: {

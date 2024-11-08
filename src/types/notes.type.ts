@@ -16,6 +16,7 @@ type FolderType = {
   updatedAt: Date;
   subFolders: FolderType[];
   notes: NoteType[];
+  isExpanded: boolean;
 };
 
 type Data = FolderType[];

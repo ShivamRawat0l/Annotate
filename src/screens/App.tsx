@@ -1,9 +1,10 @@
 import Home from "./home/Home";
 import { Toaster } from "@/components/ui/sonner";
-import { SidebarProvider } from "@/components/ui/sidebar";
+import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import Explorer from "../components/Explorer";
 import { ThemeProvider } from "@/components/theme-provider";
 import { FolderProvider } from "../context/FolderProvider";
+import { Colors } from "../context/Colors";
 
 const App = () => {
   return (
@@ -11,10 +12,7 @@ const App = () => {
       <FolderProvider>
         <SidebarProvider>
           <Explorer />
-          <main>
-            <Home />
-            <Toaster />
-          </main>
+          <Home />
         </SidebarProvider>
       </FolderProvider>
     </ThemeProvider>
