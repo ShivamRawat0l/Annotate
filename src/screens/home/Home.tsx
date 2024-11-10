@@ -12,16 +12,18 @@ import {
   ContextMenuContent,
   ContextMenuItem,
 } from "@/components/ui/context-menu";
-import { SidebarTrigger } from "@/components/ui/sidebar";
 import { useEffect, useState } from "react";
 import Annote from "./Annote";
 import type { Data, FolderType, NoteType } from "../../types/notes.type";
 import { useFolder } from "@/src/context/FolderProvider";
-import { Colors } from "@/src/context/Colors";
+import { Colors } from "@/src/constants/Colors";
 import { getTheme } from "@/components/theme-provider";
 import { Toaster } from "@/components/ui/sonner";
+import { SCREEN_WIDTH } from "@/src/constants/Constants";
+import { useLayout } from "@/src/context/LayoutProvider";
+import { motion, MotionValue } from "framer-motion";
 
-const Home = () => {
+const Home = ({ sidebarWidth }: { sidebarWidth: MotionValue<number> }) => {
   const { data, setData } = useFolder();
   const theme = getTheme();
   useEffect(() => {
@@ -53,35 +55,37 @@ const Home = () => {
       loadConfig(fetchedData);
     }
   };
+
   return (
-    <div
+    <motion.div
       style={{
         height: "100vh",
-        width: "100vw",
+        width: sidebarWidth,
         backgroundColor: Colors[theme].background,
       }}
     >
-      <SidebarTrigger />
       <div style={styles.container}>
-        <Breadcrumb>
-          <BreadcrumbList>
-            <BreadcrumbItem>
-              <BreadcrumbLink>Home</BreadcrumbLink>
-            </BreadcrumbItem>
-            <BreadcrumbSeparator />
-            <BreadcrumbItem>
-              <BreadcrumbLink>Components</BreadcrumbLink>
-            </BreadcrumbItem>
-            <BreadcrumbSeparator />
-            <BreadcrumbItem>
-              <BreadcrumbPage>Breadcrumb</BreadcrumbPage>
-            </BreadcrumbItem>
-          </BreadcrumbList>
-        </Breadcrumb>
-        <Annote />
+        <div style={{ height: "10vh" }}>
+          <Breadcrumb>
+            <BreadcrumbList>
+              <BreadcrumbItem>
+                <BreadcrumbLink>Home</BreadcrumbLink>
+              </BreadcrumbItem>
+              <BreadcrumbSeparator />
+              <BreadcrumbItem>
+                <BreadcrumbLink>Components</BreadcrumbLink>
+              </BreadcrumbItem>
+              <BreadcrumbSeparator />
+              <BreadcrumbItem>
+                <BreadcrumbPage>Breadcrumb</BreadcrumbPage>
+              </BreadcrumbItem>
+            </BreadcrumbList>
+          </Breadcrumb>
+        </div>
+        <Annote sidebarWidth={sidebarWidth} />
       </div>
       <Toaster />
-    </div>
+    </motion.div>
   );
 };
 
@@ -91,6 +95,7 @@ const styles = {
     display: "flex",
     flexDirection: "column",
     alignItems: "flex-start",
+    height: "100vh",
   },
   parents: {
     display: "flex",

@@ -21,4 +21,9 @@ type FolderType = {
 
 type Data = FolderType[];
 
-export type { NoteType, FolderType, Data };
+type UserType = {
+  id: string;
+  email: string;
+};
+
+export type { NoteType, FolderType, Data, UserType };

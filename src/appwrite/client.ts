@@ -1,6 +1,10 @@
-import { Client } from "appwrite";
+import { Client, Databases } from "appwrite";
+import { Account } from "appwrite";
+import { OAuthProvider } from "appwrite";
 
 const client = new Client();
-client.setProject("672cb7500002f0545438");
+client.setProject(process.env.APPWRITE_PROJECT_ID as string);
 
-export default client;
+const account = new Account(client);
+const databases = new Databases(client);
+export { account, OAuthProvider, databases };

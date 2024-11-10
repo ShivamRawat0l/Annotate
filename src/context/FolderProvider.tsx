@@ -7,6 +7,7 @@ type FolderContextType = {
   folderPath: string[];
   setFolderPath: React.Dispatch<React.SetStateAction<string[]>>;
   selectedNote: NoteType | null;
+  resetData: () => void;
   setSelectedNote: React.Dispatch<React.SetStateAction<NoteType | null>>;
 };
 
@@ -17,6 +18,12 @@ const FolderProvider = ({ children }: { children: React.ReactNode }) => {
   const [folderPath, setFolderPath] = useState<string[]>([]);
   const [selectedNote, setSelectedNote] = useState<NoteType | null>(null);
 
+  const resetData = () => {
+    setData([]);
+    setFolderPath([]);
+    setSelectedNote(null);
+  };
+
   return (
     <FolderContext.Provider
       value={{
@@ -26,6 +33,7 @@ const FolderProvider = ({ children }: { children: React.ReactNode }) => {
         setFolderPath,
         selectedNote,
         setSelectedNote,
+        resetData,
       }}
     >
       {children}
