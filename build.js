@@ -1,3 +1,5 @@
+import lightningcss from "bun-lightningcss";
+
 try {
   await Bun.build({
     entrypoints: ["./index.tsx"],
@@ -18,6 +20,7 @@ try {
       "process.env.APPWRITE_NOTES_COLLECTION_ID": `'${Bun.env.APPWRITE_NOTES_COLLECTION_ID}'`,
       "process.env.APPWRITE_USER_COLLECTION_ID": `'${Bun.env.APPWRITE_USER_COLLECTION_ID}'`,
     },
+    plugins: [lightningcss()],
   });
   console.log("Recompiled");
 } catch (error) {

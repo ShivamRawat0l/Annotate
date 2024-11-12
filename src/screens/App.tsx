@@ -1,26 +1,18 @@
 import Home from "./home/Home";
-import { Toaster } from "@/components/ui/sonner";
-
-import Explorer from "./components/Explorer";
 import { ThemeProvider } from "@/components/theme-provider";
 import { FolderProvider } from "../context/FolderProvider";
-import { Colors } from "../constants/Colors";
 import { AuthenticationProvider } from "../context/AuthenticationProvider";
-import {
-  motion,
-  useAnimate,
-  useDragControls,
-  useMotionValue,
-  useTransform,
-} from "framer-motion";
+import { motion, useMotionValue, useTransform } from "framer-motion";
 import { LayoutProvider, useLayout } from "../context/LayoutProvider";
-import { useEffect } from "react";
-import { SCREEN_WIDTH } from "../constants/Constants";
+import { DEFAULT_SIDEBAR_WIDTH, SCREEN_WIDTH } from "../constants/Constants";
+import { ExplorerProvider } from "../context/ExplorerProvider";
+import { Explorer } from "./explorer/Explorer";
+import { LoginPopup } from "./popup/LoginPopup";
 
 const App = () => {
   const { sidebarOpen } = useLayout();
 
-  const motionValue = useMotionValue(200);
+  const motionValue = useMotionValue(DEFAULT_SIDEBAR_WIDTH);
   const remainingWidth = useTransform(
     motionValue,
     (value) => SCREEN_WIDTH - value
@@ -32,8 +24,12 @@ const App = () => {
         <FolderProvider>
           <AuthenticationProvider>
             <div style={{ display: "flex" }}>
+              <LoginPopup />
+
               <motion.div style={{ width: motionValue }}>
-                <Explorer />
+                <ExplorerProvider>
+                  <Explorer />
+                </ExplorerProvider>
               </motion.div>
               {sidebarOpen && (
                 <motion.div

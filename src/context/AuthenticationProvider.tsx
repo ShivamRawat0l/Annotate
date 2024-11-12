@@ -3,14 +3,14 @@ import {
   getUser,
   logoutUser,
   loginWithGoogle,
+  setProfileImage,
 } from "../appwrite/authentication";
 import type { UserType } from "../types/notes.type";
 import { useFolder } from "./FolderProvider";
 import { createUser, getNotesDB, getUserDB } from "../appwrite/database";
 
-// TODO: Fix this
 type AuthenticationContextType = {
-  user: any | null;
+  user: UserType | null;
   googleLogin: () => void;
   logout: () => void;
 };
@@ -36,23 +36,41 @@ const AuthenticationProvider = ({
   const checkLogin = async () => {
     const user = await getUser();
     if (user) {
-      const userData: UserType = {
-        id: user.$id,
-        email: user.email,
-      };
-      const userCreated = await createUser(user.$id, userData);
-      console.log("user created", userCreated);
+      let userData: UserType;
+      if (!user.prefs.imageUrl) {
+        const imageUrl = await setProfileImage();
+        userData = {
+          id: user.$id,
+          email: user.email,
+          photoUrl: imageUrl,
+        };
+      } else {
+        userData = {
+          id: user.$id,
+          email: user.email,
+          photoUrl: user.prefs.imageUrl,
+        };
+      }
+      let userCreated = false;
+      try {
+        userCreated = await createUser(user.$id, userData);
+      } catch (error) {
+        console.log("user already created");
+      }
       if (!userCreated) {
         try {
           const notes = await getNotesDB(user.$id);
+          console.log(notes);
           setData(notes.notes);
         } catch (error) {
           setData([]);
         }
         try {
           const annotatedUser = await getUserDB(user.$id);
+          console.log("getting user");
           setUser(annotatedUser);
         } catch (error) {
+          console.log("error getting user", error);
           setUser(null);
         }
       } else {

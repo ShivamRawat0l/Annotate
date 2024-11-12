@@ -9,7 +9,6 @@ type NoteType = {
 };
 
 type FolderType = {
-  // NOTE: NOte this in notes app [key: string] = folder name
   id: string;
   title: string;
   createdAt: Date;
@@ -24,6 +23,7 @@ type Data = FolderType[];
 type UserType = {
   id: string;
   email: string;
+  photoUrl: string;
 };
 
 export type { NoteType, FolderType, Data, UserType };

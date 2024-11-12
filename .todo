@@ -1,10 +1,13 @@
-- Address bar for the note
-- For github gist integration we need to add github login. 
-- Explorer
-- Keyboard shortcuts to fast access the notes 
-- Save focus featuer to the excalidraw
-- Font not working in the shadcn
-- Collpase not working in the explorer
+- FEATURES
+    - Address bar for the note
+    - For github gist integration we need to add github login. 
+    - EXPLORER
+        - Keyboard shortcuts to fast access the notes 
+        - Collapse and expand the folders
+        - Collapse all the folders
+    - Save focus featuer to the excalidraw
+    - Font not working in the shadcn
+    - COLLAPSE NOT WORKING IN THE EXPLORER - DONE
 - 
 - 
 - 
@@ -12,3 +15,6 @@
 - 
 - Search 
 - Library 
+
+- BUG 
+    - When opening the inspect elemenet the size is same 
