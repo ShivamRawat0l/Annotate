@@ -14,7 +14,8 @@ type ExplorerContextMenuType = {
 };
 
 export const ExplorerContextMenu = ({ children }: ExplorerContextMenuType) => {
-  const { selectedFolder, createNewFolder, createNewNote } = useFolder();
+  const { selectedFolder, createNewFolder, createNewNote, toggleFolderExpand } =
+    useFolder();
   const { setFolderEditing } = useExplorer();
 
   const renderRightClickMenuOptions = (
@@ -46,10 +47,8 @@ export const ExplorerContextMenu = ({ children }: ExplorerContextMenuType) => {
           // TODO: Implement
         })}
         {renderRightClickMenuOptions("Toggle Expand", "⇧T", () => {
-          // TODO: Implement
-        })}
-        {renderRightClickMenuOptions("Create Folder", "⇧A", () => {
-          if (selectedFolder) createNewFolder(selectedFolder);
+          if (selectedFolder)
+            toggleFolderExpand(selectedFolder, !selectedFolder.isExpanded);
         })}
       </ContextMenuContent>
     );

@@ -1,20 +1,23 @@
 - FEATURES
     - Address bar for the note
-    - For github gist integration we need to add github login. 
     - EXPLORER
         - Keyboard shortcuts to fast access the notes 
-        - Collapse and expand the folders
-        - Collapse all the folders
+        - Collapse and expand the folders @done
+        - Collapse all the folders @done
     - Save focus featuer to the excalidraw
-    - Font not working in the shadcn
-    - COLLAPSE NOT WORKING IN THE EXPLORER - DONE
+    - Font not working in the shadcn @done
+    - COLLAPSE NOT WORKING IN THE EXPLORER - @done
 - 
 - 
 - 
-- For google login you will need to then link 
+- For google login you will need to then link @done
 - 
 - Search 
 - Library 
 
 - BUG 
-    - When opening the inspect elemenet the size is same 
+    - When opening the inspect elemenet the size is same [Fixed by reloading website when resized]
+
+
+- Shelved
+    - For github gist integration we need to add github login.  [Bad feature design for normal users]

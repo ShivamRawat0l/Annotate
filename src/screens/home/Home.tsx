@@ -22,39 +22,20 @@ import { Toaster } from "@/components/ui/sonner";
 import { SCREEN_WIDTH } from "@/src/constants/Constants";
 import { useLayout } from "@/src/context/LayoutProvider";
 import { motion, MotionValue } from "framer-motion";
+import { Input } from "@/components/ui/input";
+import { globalStyles } from "@/src/constants/Styles";
+import { Search } from "../search/Search";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import { NotebookIcon, NotebookPenIcon, Trash2Icon } from "lucide-react";
+import { PinnedNotes } from "./components/PinnedNotes";
 
 const Home = ({ sidebarWidth }: { sidebarWidth: MotionValue<number> }) => {
-  const { data, setData } = useFolder();
+  const { selectedNote } = useFolder();
   const theme = getTheme();
-  useEffect(() => {
-    loadData();
-  }, []);
-
-  useEffect(() => {
-    saveData(data);
-    saveConfig();
-  }, [data]);
-
-  const saveConfig = () => {
-    localStorage.setItem("config", JSON.stringify({}));
-  };
-
-  const saveData = (data: Data) => {
-    localStorage.setItem("data", JSON.stringify(data));
-  };
-
-  const loadConfig = (initialData: Data) => {
-    const config = localStorage.getItem("config");
-  };
-
-  const loadData = () => {
-    const data = localStorage.getItem("data");
-    if (data) {
-      const fetchedData = JSON.parse(data);
-      setData(fetchedData);
-      loadConfig(fetchedData);
-    }
-  };
 
   return (
     <motion.div
@@ -65,24 +46,51 @@ const Home = ({ sidebarWidth }: { sidebarWidth: MotionValue<number> }) => {
       }}
     >
       <div style={styles.container}>
-        <div style={{ height: "10vh" }}>
-          <Breadcrumb>
-            <BreadcrumbList>
-              <BreadcrumbItem>
-                <BreadcrumbLink>Home</BreadcrumbLink>
-              </BreadcrumbItem>
-              <BreadcrumbSeparator />
-              <BreadcrumbItem>
-                <BreadcrumbLink>Components</BreadcrumbLink>
-              </BreadcrumbItem>
-              <BreadcrumbSeparator />
-              <BreadcrumbItem>
-                <BreadcrumbPage>Breadcrumb</BreadcrumbPage>
-              </BreadcrumbItem>
-            </BreadcrumbList>
-          </Breadcrumb>
-        </div>
-        <Annote sidebarWidth={sidebarWidth} />
+        <motion.div
+          style={{
+            height: "4vh",
+            ...globalStyles.flexRow,
+            justifyContent: "space-between",
+            alignItems: "center",
+            width: sidebarWidth,
+            paddingLeft: "18px",
+            paddingRight: "18px",
+          }}
+        >
+          <div>
+            <Breadcrumb>
+              <BreadcrumbList>
+                <BreadcrumbItem>
+                  <BreadcrumbLink>Home</BreadcrumbLink>
+                </BreadcrumbItem>
+                <BreadcrumbSeparator />
+                <BreadcrumbItem>
+                  <BreadcrumbLink>Components</BreadcrumbLink>
+                </BreadcrumbItem>
+                <BreadcrumbSeparator />
+                <BreadcrumbItem>
+                  <BreadcrumbPage>Breadcrumb</BreadcrumbPage>
+                </BreadcrumbItem>
+              </BreadcrumbList>
+            </Breadcrumb>
+          </div>
+          <div
+            style={{ ...globalStyles.flexRow, flex: 0, alignItems: "center" }}
+          >
+            <div style={{ whiteSpace: "nowrap", marginRight: 24 }}>
+              <PinnedNotes />
+            </div>
+            <Input
+              placeholder="Press CTRL + F to search"
+              style={{ width: "260px" }}
+            />
+          </div>
+        </motion.div>
+        {selectedNote ? (
+          <Annote sidebarWidth={sidebarWidth} />
+        ) : (
+          <Search sidebarWidth={sidebarWidth} />
+        )}
       </div>
       <Toaster />
     </motion.div>

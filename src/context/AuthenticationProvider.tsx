@@ -13,12 +13,14 @@ type AuthenticationContextType = {
   user: UserType | null;
   googleLogin: () => void;
   logout: () => void;
+  isLoading: boolean;
 };
 
 const AuthenticationContext = createContext<AuthenticationContextType>({
   user: null,
   googleLogin: () => {},
   logout: () => {},
+  isLoading: true,
 });
 
 const AuthenticationProvider = ({
@@ -27,10 +29,13 @@ const AuthenticationProvider = ({
   children: React.ReactNode;
 }) => {
   const [user, setUser] = useState<UserType | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
   const { resetData, setData } = useFolder();
 
   useEffect(() => {
-    checkLogin();
+    checkLogin().then(() => {
+      setIsLoading(false);
+    });
   }, []);
 
   const checkLogin = async () => {
@@ -92,14 +97,20 @@ const AuthenticationProvider = ({
   };
 
   return (
-    <AuthenticationContext.Provider value={{ user, googleLogin, logout }}>
+    <AuthenticationContext.Provider
+      value={{ user, googleLogin, logout, isLoading }}
+    >
       {children}
     </AuthenticationContext.Provider>
   );
 };
 
 const useAuth = () => {
-  return useContext(AuthenticationContext);
+  const context = useContext(AuthenticationContext);
+  if (context === undefined) {
+    throw new Error("useAuth must be used within a AuthenticationProvider");
+  }
+  return context;
 };
 
 export { AuthenticationProvider, useAuth };

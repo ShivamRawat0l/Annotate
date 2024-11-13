@@ -1,4 +1,4 @@
-import { createContext, useContext, useState } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
 import type { Data, FolderType, NoteType } from "../types/notes.type";
 import { toast } from "sonner";
 import { uuidv7 } from "uuidv7";
@@ -18,21 +18,63 @@ type FolderContextType = {
   setSelectedFolder: React.Dispatch<React.SetStateAction<FolderType | null>>;
   toggleFolderExpand: (folder: FolderType, isExpanded: boolean) => void;
   renameFolder: (folder: FolderType, newTitle: string) => void;
+  collapseSubFolders: (folder: FolderType) => void;
+  isLoading: boolean;
 };
 
 const FolderContext = createContext<FolderContextType | undefined>(undefined);
 
 const FolderProvider = ({ children }: { children: React.ReactNode }) => {
   const [data, setData] = useState<Data>([]);
+  const [isLoading, setIsLoading] = useState(true);
   const [folderPath, setFolderPath] = useState<FolderType[]>([]);
   const [selectedNote, setSelectedNote] = useState<NoteType | null>(null);
   const [selectedFolder, setSelectedFolder] = useState<FolderType | null>(null);
+
+  useEffect(() => {
+    loadData().then(() => {
+      setIsLoading(false);
+    });
+  }, []);
+
+  useEffect(() => {
+    saveData(data);
+    saveConfig();
+  }, [data]);
+
+  const saveConfig = () => {
+    localStorage.setItem("config", JSON.stringify({}));
+  };
+
+  const saveData = (data: Data) => {
+    localStorage.setItem("data", JSON.stringify(data));
+  };
+
+  const loadConfig = (initialData: Data) => {
+    const config = localStorage.getItem("config");
+  };
+
+  const loadData = async () => {
+    const data = localStorage.getItem("data");
+    if (data) {
+      const fetchedData = JSON.parse(data);
+      setData(fetchedData);
+      loadConfig(fetchedData);
+    }
+  };
 
   const resetData = () => {
     setData([]);
     setFolderPath([]);
     setSelectedNote(null);
     setSelectedFolder(null);
+  };
+
+  const collapseSubFolders = (folder: FolderType) => {
+    folder.subFolders.forEach((subFolder) => {
+      subFolder.isExpanded = false;
+    });
+    setData([...data]);
   };
 
   const toggleFolderExpand = (folder: FolderType, isExpanded: boolean) => {
@@ -104,6 +146,8 @@ const FolderProvider = ({ children }: { children: React.ReactNode }) => {
         setSelectedFolder,
         toggleFolderExpand,
         renameFolder,
+        collapseSubFolders,
+        isLoading,
       }}
     >
       {children}

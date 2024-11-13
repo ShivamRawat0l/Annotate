@@ -12,7 +12,7 @@ import {
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
 import type { FolderType } from "@/src/types/notes.type";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Input } from "@/components/ui/input";
 import { ExplorerContextMenu } from "./ExplorerContextMenu";
 import { useFolder } from "@/src/context/FolderProvider";
@@ -32,6 +32,7 @@ const FolderComponent = ({ folder }: FolderComponentProps) => {
     toggleFolderExpand,
     setSelectedFolder,
     selectedFolder,
+    collapseSubFolders,
     renameFolder,
   } = useFolder();
   const { folderEditing, setFolderEditing } = useExplorer();
@@ -80,6 +81,16 @@ const FolderComponent = ({ folder }: FolderComponentProps) => {
   const renderFolderOptions = () => {
     return (
       <div
+        onDrag={(e) => {
+          e.preventDefault();
+        }}
+        onDragOver={(e) => {
+          e.preventDefault();
+        }}
+        onDrop={(e) => {
+          e.preventDefault();
+          console.log("dropped");
+        }}
         style={{
           ...globalStyles.flexRow,
           marginRight: 8,
@@ -99,6 +110,15 @@ const FolderComponent = ({ folder }: FolderComponentProps) => {
     );
   };
 
+  const ref = useRef<HTMLDivElement>(null);
+
+  const handleClick = (event: MouseEvent) => {
+    if (ref.current && !ref.current.contains(event.target as HTMLElement)) {
+      setFolderEditing(null);
+      document.removeEventListener("click", handleClick);
+    }
+  };
+
   const renderTitle = () => {
     return (
       <div
@@ -110,9 +130,12 @@ const FolderComponent = ({ folder }: FolderComponentProps) => {
         }}
       >
         <div
+          ref={ref}
           contentEditable={folderEditing === folder.id}
           onDoubleClick={(e) => {
             setFolderEditing(folder.id);
+            document.addEventListener("click", handleClick);
+
             setTimeout(() => {
               const range = document.createRange();
               range.selectNodeContents(e.target as HTMLElement);
@@ -121,14 +144,11 @@ const FolderComponent = ({ folder }: FolderComponentProps) => {
               selection?.addRange(range);
             }, 0);
           }}
-          onSubmit={() => {
-            setFolderEditing(null);
-            folder.title = title;
-          }}
           onKeyDown={(e) => {
             if (e.key === "Enter") {
               setFolderEditing(null);
-              folder.title = title;
+              folder.title = (e.target as HTMLDivElement).innerText;
+              document.removeEventListener("click", handleClick);
             }
           }}
           style={{
@@ -162,6 +182,7 @@ const FolderComponent = ({ folder }: FolderComponentProps) => {
       >
         <ExplorerContextMenu>
           <div
+            onContextMenu={() => setSelectedFolder(folder)}
             onClick={() => setSelectedFolder(folder)}
             onMouseOver={() => {
               setHover(true);
@@ -207,16 +228,21 @@ const FolderComponent = ({ folder }: FolderComponentProps) => {
 
         {folder.subFolders.length > 0 &&
           folder.isExpanded &&
+          folder.subFolders.find((subFolder) => subFolder.isExpanded) &&
           selectedFolder?.id == folder.id && (
             <div
+              className="cursor-pointer"
               style={{
                 borderBottomLeftRadius: 8,
                 borderBottomRightRadius: 8,
                 paddingLeft: 20,
                 paddingTop: 1,
                 paddingBottom: 1,
-                fontSize: 10,
-                backgroundColor: "blue",
+                fontSize: 8,
+                backgroundColor: "skyblue",
+              }}
+              onClick={() => {
+                collapseSubFolders(folder);
               }}
             >
               Collapse subfolders
