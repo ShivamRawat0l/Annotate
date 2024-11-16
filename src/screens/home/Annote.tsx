@@ -6,8 +6,6 @@ import { useEffect, useState, useRef } from "react";
 import type { ExcalidrawImperativeAPI } from "@excalidraw/excalidraw/types/types";
 import { getTheme } from "@/components/theme-provider";
 import { Colors } from "@/src/constants/Colors";
-import { useLayout } from "@/src/context/LayoutProvider";
-import { SCREEN_WIDTH } from "@/src/constants/Constants";
 import { motion, MotionValue } from "framer-motion";
 
 type Props = {};
@@ -39,64 +37,50 @@ const Annote = ({ sidebarWidth }: { sidebarWidth: MotionValue<number> }) => {
     }
   }, [selectedNote]);
 
+  if (!selectedNote) {
+    return null;
+  }
+
   return (
     <div>
-      {selectedNote && (
-        <motion.div
-          style={{
-            height: "88vh",
-            width: sidebarWidth,
+      <motion.div
+        style={{
+          height: "96vh",
+          width: sidebarWidth,
+        }}
+      >
+        <Excalidraw
+          UIOptions={{
+            canvasActions: {
+              changeViewBackgroundColor: false,
+              toggleTheme: false,
+            },
+          }}
+          excalidrawAPI={(api) => setExcalidrawAPI(api)}
+          renderTopRightUI={() => <div></div>}
+          initialData={{
+            elements: selectedNote.excalidrawData,
+            appState: {
+              viewBackgroundColor: Colors[theme].background,
+              theme: "dark",
+              currentItemStrokeColor: "#eee",
+            },
+          }}
+          onChange={(excalidrawData) => {
+            if (currentNote.current === selectedNote.id) {
+              selectedNote.excalidrawData = [...excalidrawData];
+              setData(data);
+            }
           }}
         >
-          <Excalidraw
-            UIOptions={{
-              canvasActions: {
-                changeViewBackgroundColor: false,
-                toggleTheme: false,
-              },
-            }}
-            excalidrawAPI={(api) => setExcalidrawAPI(api)}
-            renderTopRightUI={() => (
-              <div>
-                <button
-                  onClick={() =>
-                    navigator.clipboard.writeText(JSON.stringify(data))
-                  }
-                >
-                  Copy
-                </button>
-                <button
-                  onClick={() => {
-                    handleFileDownload();
-                  }}
-                >
-                  Export Temp
-                </button>
-                <button onClick={() => setData(data)}>Save</button>
-              </div>
-            )}
-            initialData={{
-              elements: selectedNote.excalidrawData,
-              appState: {
-                viewBackgroundColor: Colors[theme].background,
-                theme: "dark",
-              },
-            }}
-            onChange={(excalidrawData) => {
-              if (currentNote.current === selectedNote.id) {
-                selectedNote.excalidrawData = [...excalidrawData];
-              }
-            }}
-          >
-            <WelcomeScreen>
-              <WelcomeScreen.Hints.ToolbarHint>
-                <p> ToolBar Hints </p>
-              </WelcomeScreen.Hints.ToolbarHint>
-              <WelcomeScreen.Hints.HelpHint />
-            </WelcomeScreen>
-          </Excalidraw>
-        </motion.div>
-      )}
+          <WelcomeScreen>
+            <WelcomeScreen.Hints.ToolbarHint>
+              <p> ToolBar </p>
+            </WelcomeScreen.Hints.ToolbarHint>
+            <WelcomeScreen.Hints.HelpHint />
+          </WelcomeScreen>
+        </Excalidraw>
+      </motion.div>
     </div>
   );
 };
