@@ -1,6 +1,5 @@
 import {
   ChevronRight,
-  File,
   Folder,
   FolderOpen,
   Folders,
@@ -13,17 +12,25 @@ import {
 } from "@/components/ui/collapsible";
 import type { FolderType } from "@/src/types/notes.type";
 import { useEffect, useRef, useState } from "react";
-import { Input } from "@/components/ui/input";
 import { ExplorerContextMenu } from "./ExplorerContextMenu";
 import { useFolder } from "@/src/context/FolderProvider";
 import { useExplorer } from "@/src/context/ExplorerProvider";
 import { globalStyles, type Style } from "@/src/constants/Styles";
-
+import "./ExplorerFolder.css";
+import { motion } from "framer-motion";
 type FolderComponentProps = {
   folder: FolderType;
+  padding: number;
 };
 
-const FolderComponent = ({ folder }: FolderComponentProps) => {
+type ExplorerFoldersType = {
+  folders: FolderType[];
+  padding: number;
+};
+
+const MotionChevronRight = motion(ChevronRight);
+
+const FolderComponent = ({ folder, padding }: FolderComponentProps) => {
   const {
     createNewFolder,
     createNewNote,
@@ -33,11 +40,9 @@ const FolderComponent = ({ folder }: FolderComponentProps) => {
     setSelectedFolder,
     selectedFolder,
     collapseSubFolders,
-    renameFolder,
   } = useFolder();
   const { folderEditing, setFolderEditing } = useExplorer();
   const [hover, setHover] = useState(false);
-  const [title, setTitle] = useState(folder.title);
 
   const renderSubFolders = (folder: FolderType) => {
     return (
@@ -46,23 +51,24 @@ const FolderComponent = ({ folder }: FolderComponentProps) => {
           style={{
             display: "flex",
             flexDirection: "column",
-            paddingLeft: 20,
           }}
         >
           {folder.notes.map((note) => (
-            <div
+            <motion.div
               key={note.id}
+              whileHover={{ backgroundColor: "#aaffee33" }}
+              transition={{ duration: 0.2 }}
               style={{
                 flex: 1,
                 display: "flex",
                 alignItems: "center",
                 flexDirection: "row",
                 paddingTop: 8,
-                paddingLeft: 4,
+                paddingLeft: padding + 20 + 10,
                 paddingBottom: 8,
                 gap: 10,
                 backgroundColor:
-                  selectedNote?.id === note.id ? "#aaffee33" : "transparent",
+                  selectedNote?.id === note.id ? "#aaffee33" : "#aaffee00",
               }}
               onClick={() => {
                 setSelectedNote(note);
@@ -70,9 +76,9 @@ const FolderComponent = ({ folder }: FolderComponentProps) => {
             >
               <NotebookPen size={18} />
               {note.title}
-            </div>
+            </motion.div>
           ))}
-          <ExplorerFolders folders={folder.subFolders} />
+          <ExplorerFolders folders={folder.subFolders} padding={padding + 20} />
         </div>
       </CollapsibleContent>
     );
@@ -81,16 +87,6 @@ const FolderComponent = ({ folder }: FolderComponentProps) => {
   const renderFolderOptions = () => {
     return (
       <div
-        onDrag={(e) => {
-          e.preventDefault();
-        }}
-        onDragOver={(e) => {
-          e.preventDefault();
-        }}
-        onDrop={(e) => {
-          e.preventDefault();
-          console.log("dropped");
-        }}
         style={{
           ...globalStyles.flexRow,
           marginRight: 8,
@@ -156,7 +152,7 @@ const FolderComponent = ({ folder }: FolderComponentProps) => {
             borderBottom: folderEditing === folder.id ? "1px solid gray" : " ",
           }}
         >
-          {title}
+          {folder.title}
         </div>
       </div>
     );
@@ -181,7 +177,10 @@ const FolderComponent = ({ folder }: FolderComponentProps) => {
         }}
       >
         <ExplorerContextMenu>
-          <div
+          <motion.div
+            initial={{ backgroundColor: "#aaffee00" }}
+            whileHover={{ backgroundColor: "#aaffee33" }}
+            transition={{ duration: 0.2 }}
             onContextMenu={() => setSelectedFolder(folder)}
             onClick={() => setSelectedFolder(folder)}
             onMouseOver={() => {
@@ -190,25 +189,28 @@ const FolderComponent = ({ folder }: FolderComponentProps) => {
             // TODO: change to theme color
             style={{
               backgroundColor:
-                selectedFolder?.id === folder.id ? "#aaffee33" : "transparent",
+                selectedFolder?.id === folder.id ? "#aaffee33" : "#aaffee00",
               display: "flex",
               flex: 1,
               flexDirection: "row",
+              paddingLeft: padding,
             }}
             onMouseOut={() => setHover(false)}
           >
             <div
               style={{
                 ...globalStyles.flexRow,
-                paddingTop: "10px",
-                paddingBottom: "10px",
+                paddingTop: 8,
+                paddingBottom: 8,
               }}
             >
               <CollapsibleTrigger>
                 <div style={styles.folderIcon}>
-                  <ChevronRight
-                    style={{
-                      transform: folder.isExpanded ? "rotate(90deg)" : "",
+                  <MotionChevronRight
+                    animate={{ rotate: folder.isExpanded ? 90 : 0 }}
+                    transition={{
+                      duration: 0.2,
+                      ease: "easeInOut",
                     }}
                   />
                   {folder.isExpanded ? (
@@ -223,7 +225,7 @@ const FolderComponent = ({ folder }: FolderComponentProps) => {
               {renderTitle()}
             </div>
             {renderFolderOptions()}
-          </div>
+          </motion.div>
         </ExplorerContextMenu>
 
         {folder.subFolders.length > 0 &&
@@ -254,15 +256,16 @@ const FolderComponent = ({ folder }: FolderComponentProps) => {
   );
 };
 
-type ExplorerFoldersType = {
-  folders: FolderType[];
-};
-
-export const ExplorerFolders = ({ folders }: ExplorerFoldersType) => {
+export const ExplorerFolders = ({
+  folders,
+  padding = 4,
+}: ExplorerFoldersType) => {
   return (
     <>
       {folders.map((folder) => {
-        return <FolderComponent folder={folder} key={folder.id} />;
+        return (
+          <FolderComponent folder={folder} key={folder.id} padding={padding} />
+        );
       })}
     </>
   );

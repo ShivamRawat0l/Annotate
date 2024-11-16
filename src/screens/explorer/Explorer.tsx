@@ -4,12 +4,11 @@ import { Plus, PlusSquare } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Colors } from "../../constants/Colors";
 import { getTheme, useTheme } from "@/components/theme-provider";
-import { Button } from "@/components/ui/button";
 import { ExploerHeader } from "./ExplorerHeader";
 import { ExplorerFooter } from "./ExplorerFooter";
 import { ExplorerFolders } from "./ExplorerFolder";
 import { globalStyles } from "@/src/constants/Styles";
-import { ExplorerProvider, useExplorer } from "@/src/context/ExplorerProvider";
+import { useExplorer } from "@/src/context/ExplorerProvider";
 import { Separator } from "@/components/ui/separator";
 import "../css/Scrollbar.css";
 import { useAuth } from "@/src/context/AuthenticationProvider";
@@ -101,9 +100,8 @@ export const Explorer = () => {
           <div
             style={{
               border: "2px dashed gray",
-              borderRadius: 5,
-              marginTop: 50,
-              marginBottom: 20,
+              borderRadius: 8,
+              marginTop: 20,
               marginLeft: 14,
               marginRight: 14,
               justifyContent: "center",

@@ -14,6 +14,7 @@ import { globalStyles } from "@/src/constants/Styles";
 import { useEffect, useRef, useState } from "react";
 import { motion } from "framer-motion";
 import { useExplorer } from "@/src/context/ExplorerProvider";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 const CustomRefreshCcwDotIcon = motion(RefreshCcwDotIcon);
 
@@ -69,11 +70,15 @@ export const ExplorerFooter = () => {
           }}
         >
           <div style={{ width: 40, height: 40 }}>
-            <img
-              src={user.photoUrl}
-              style={{ width: 40, height: 40, borderRadius: 40 }}
-              alt="user"
-            />
+            <Avatar>
+              <AvatarImage src={user.photoUrl} />
+              <AvatarFallback>
+                {(user.name ?? "4 0 4")
+                  .split(" ")
+                  .map((n) => n[0])
+                  .join("")}
+              </AvatarFallback>
+            </Avatar>
           </div>
           <div style={{ ...globalStyles.flexColumn }}>
             <div style={{ fontSize: 14 }}>Synced 5 minutes ago</div>

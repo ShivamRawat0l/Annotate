@@ -1,22 +1,21 @@
+import type { Models } from "appwrite";
 import { account, OAuthProvider } from "./client";
+import type { UserType } from "../types/notes.type";
 
-const loginWithGoogle = async () => {
+export const loginWithGoogle = async () => {
   try {
     await account.createOAuth2Session(
       OAuthProvider.Google,
       window.location.href,
       window.location.href,
-      [
-        "https://www.googleapis.com/auth/userinfo.profile",
-        "https://www.googleapis.com/auth/userinfo.email",
-      ]
+      []
     );
   } catch (error) {
     console.error(error);
   }
 };
 
-const logoutUser = async () => {
+export const logoutUser = async () => {
   try {
     await account.deleteSession("current");
   } catch (error) {
@@ -24,16 +23,12 @@ const logoutUser = async () => {
   }
 };
 
-const getUser = async () => {
-  try {
-    const user = await account.get();
-    return user;
-  } catch (error) {
-    console.error(error);
-  }
+export const getUser = async () => {
+  const user = await account.get();
+  return user;
 };
 
-const setProfileImage = async () => {
+export const setProfileImage = async () => {
   const session = await account.getSession("current");
   const response = await fetch(
     `https://www.googleapis.com/oauth2/v3/userinfo?access_token=${session.providerAccessToken}`,
@@ -49,4 +44,24 @@ const setProfileImage = async () => {
   });
   return data.picture;
 };
-export { loginWithGoogle, logoutUser, getUser, setProfileImage };
+
+export const getUserData = async (user: Models.User<Models.Preferences>) => {
+  let userData: UserType;
+  if (!user.prefs.imageUrl) {
+    const imageUrl = await setProfileImage();
+    userData = {
+      id: user.$id,
+      email: user.email,
+      name: user.name,
+      photoUrl: imageUrl,
+    };
+  } else {
+    userData = {
+      id: user.$id,
+      email: user.email,
+      name: user.name,
+      photoUrl: user.prefs.imageUrl,
+    };
+  }
+  return userData;
+};

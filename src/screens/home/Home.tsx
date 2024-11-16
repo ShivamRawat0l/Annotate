@@ -25,12 +25,6 @@ import { motion, MotionValue } from "framer-motion";
 import { Input } from "@/components/ui/input";
 import { globalStyles } from "@/src/constants/Styles";
 import { Search } from "../search/Search";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
-import { NotebookIcon, NotebookPenIcon, Trash2Icon } from "lucide-react";
 import { PinnedNotes } from "./components/PinnedNotes";
 
 const Home = ({ sidebarWidth }: { sidebarWidth: MotionValue<number> }) => {
@@ -53,8 +47,8 @@ const Home = ({ sidebarWidth }: { sidebarWidth: MotionValue<number> }) => {
             justifyContent: "space-between",
             alignItems: "center",
             width: sidebarWidth,
-            paddingLeft: "18px",
-            paddingRight: "18px",
+            paddingLeft: 40,
+            paddingRight: 40,
           }}
         >
           <div>

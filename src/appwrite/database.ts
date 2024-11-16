@@ -23,6 +23,7 @@ export const getUserDB: (userId: string) => Promise<UserType> = async (
   return {
     id: user.id,
     email: user.email,
+    name: user.name,
     photoUrl: user.photoUrl,
   };
 };
@@ -36,30 +37,32 @@ export const getNotesDB = async (userId: string) => {
   return { notes: notes.data.map((note: string) => JSON.parse(note)) };
 };
 
+const createUserDocument = async (userId: string, user: UserType) => {
+  return databases.createDocument(
+    databaseId,
+    userCollectionId,
+    userId,
+    {
+      ...user,
+    },
+    [Permission.read(Role.user(userId)), Permission.update(Role.user(userId))]
+  );
+};
+
+const createNotesDocument = async (userId: string) => {
+  return databases.createDocument(
+    databaseId,
+    notesCollectionId,
+    userId,
+    {
+      data: [],
+    },
+    [Permission.read(Role.user(userId)), Permission.update(Role.user(userId))]
+  );
+};
+
 export const createUser = async (userId: string, user: UserType) => {
-  try {
-    const createUserDb = databases.createDocument(
-      databaseId,
-      userCollectionId,
-      userId,
-      {
-        ...user,
-      },
-      [Permission.read(Role.user(userId)), Permission.update(Role.user(userId))]
-    );
-    const createNotesDb = await databases.createDocument(
-      databaseId,
-      notesCollectionId,
-      userId,
-      {
-        data: [],
-      },
-      [Permission.read(Role.user(userId)), Permission.update(Role.user(userId))]
-    );
-    await Promise.all([createUserDb, createNotesDb]);
-    return true;
-  } catch (error) {
-    console.log("error creating user", error);
-    return false;
-  }
+  const createUserDb = createUserDocument(userId, user);
+  const createNotesDb = createNotesDocument(userId);
+  await Promise.all([createUserDb, createNotesDb]);
 };

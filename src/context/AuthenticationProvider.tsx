@@ -3,7 +3,7 @@ import {
   getUser,
   logoutUser,
   loginWithGoogle,
-  setProfileImage,
+  getUserData,
 } from "../appwrite/authentication";
 import type { UserType } from "../types/notes.type";
 import { useFolder } from "./FolderProvider";
@@ -39,49 +39,20 @@ const AuthenticationProvider = ({
   }, []);
 
   const checkLogin = async () => {
-    const user = await getUser();
-    if (user) {
-      let userData: UserType;
-      if (!user.prefs.imageUrl) {
-        const imageUrl = await setProfileImage();
-        userData = {
-          id: user.$id,
-          email: user.email,
-          photoUrl: imageUrl,
-        };
-      } else {
-        userData = {
-          id: user.$id,
-          email: user.email,
-          photoUrl: user.prefs.imageUrl,
-        };
-      }
-      let userCreated = false;
+    try {
+      const user = await getUser();
+      let userData = await getUserData(user);
       try {
-        userCreated = await createUser(user.$id, userData);
-      } catch (error) {
-        console.log("user already created");
+        await createUser(user.$id, userData);
+      } catch {
+        console.log("User already exists");
       }
-      if (!userCreated) {
-        try {
-          const notes = await getNotesDB(user.$id);
-          console.log(notes);
-          setData(notes.notes);
-        } catch (error) {
-          setData([]);
-        }
-        try {
-          const annotatedUser = await getUserDB(user.$id);
-          console.log("getting user");
-          setUser(annotatedUser);
-        } catch (error) {
-          console.log("error getting user", error);
-          setUser(null);
-        }
-      } else {
-        setData([]);
-        setUser(userData);
-      }
+      const notes = await getNotesDB(user.$id);
+      setData(notes.notes);
+      const annotatedUser = await getUserDB(user.$id);
+      setUser(annotatedUser);
+    } catch (error) {
+      logout();
     }
   };
 

@@ -10,11 +10,11 @@ export function Search({
       style={{
         height: "96vh",
         width: sidebarWidth,
-        paddingTop: 140,
-        marginLeft: 30,
+        paddingTop: 40,
+        marginLeft: 40,
       }}
     >
-      <div style={{ fontSize: 20, fontWeight: 600 }}>
+      <div style={{ fontSize: 30, fontWeight: 900 }}>
         Recently Accessed Notes
       </div>
       <div></div>
