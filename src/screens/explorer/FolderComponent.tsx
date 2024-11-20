@@ -50,7 +50,6 @@ export const FolderComponent = ({
   } = useFolder();
 
   const { folderEditing, setFolderEditing } = useExplorer();
-  const { getFolderDetails } = useFolder();
   const [hover, setHover] = useState(false);
 
   const folderPath = useMemo(
@@ -60,7 +59,7 @@ export const FolderComponent = ({
   const ref = useRef<HTMLDivElement>(null);
 
   const folderDetails = useMemo(() => {
-    return getFolderDetails(folderId);
+    return folderDetailsState[folderId];
   }, [folderId, folderDetailsState]);
 
   const dragHover = useMotionValue(0);
@@ -81,7 +80,7 @@ export const FolderComponent = ({
                 note={note}
                 key={note}
                 padding={padding + 20}
-                parentId={parentId}
+                parentId={[...parentId, folderId]}
               />
             ))}
           <ExplorerFolders
@@ -109,7 +108,6 @@ export const FolderComponent = ({
             <Folder
               size={18}
               onClick={() => {
-                console.log("Folder pAth", folderPath);
                 createNewFolder(folderPath);
               }}
               style={{
@@ -282,8 +280,8 @@ export const FolderComponent = ({
 
         {folderDetails.count > 0 &&
           folderDetails.isExpanded &&
-          Object.keys(subFolders).find((subFolder) => {
-            const subFolderDetails = getFolderDetails(subFolder);
+          Object.keys(subFolders).find((subFolderId) => {
+            const subFolderDetails = folderDetailsState[subFolderId];
             if (subFolderDetails.type === ElementType.NOTE) return false;
             return subFolderDetails.isExpanded;
           }) &&

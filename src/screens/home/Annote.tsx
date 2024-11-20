@@ -1,21 +1,27 @@
 import { Excalidraw, WelcomeScreen } from "@excalidraw/excalidraw";
 import { useFolder } from "@/src/context/FolderProvider";
-import { useEffect, useState, useRef, useMemo } from "react";
+import { useEffect, useState, useRef, useMemo, useCallback } from "react";
 import type { ExcalidrawImperativeAPI } from "@excalidraw/excalidraw/types/types";
 import { getTheme } from "@/components/theme-provider";
 import { Colors } from "@/src/constants/Colors";
 import { motion, MotionValue } from "framer-motion";
 import { ElementType, type NoteType } from "@/src/types/notes.type";
 import { NOTES_SUFFIX } from "@/src/constants/Constants";
+import { throttle } from "@/src/utils/throttle";
+import { debounce } from "@/src/utils/debounce";
+import { Toaster } from "@/components/ui/sonner";
+import { toast } from "sonner";
 
 type AnnoteProps = {
   sidebarWidth: MotionValue<number>;
 };
 
 const Annote = ({ sidebarWidth }: AnnoteProps) => {
-  const { selectedFolderPath, getFolderDetails } = useFolder();
-  const currentNote = useRef<string | undefined>(undefined);
+  const { selectedFolderPath, folderDetails, setFolderDetails } = useFolder();
   const theme = getTheme();
+  const [currentNoteId, setCurrentNoteId] = useState<string | undefined>(
+    undefined
+  );
   const [excalidrawAPI, setExcalidrawAPI] =
     useState<ExcalidrawImperativeAPI | null>(null);
 
@@ -25,26 +31,35 @@ const Annote = ({ sidebarWidth }: AnnoteProps) => {
       selectedFolderPath &&
       selectedNoteId &&
       selectedNoteId.endsWith(NOTES_SUFFIX) &&
-      getFolderDetails(selectedNoteId).type === ElementType.NOTE
+      folderDetails[selectedNoteId].type === ElementType.NOTE
     ) {
-      return getFolderDetails(selectedNoteId) as NoteType;
+      return folderDetails[selectedNoteId] as NoteType;
     }
     return undefined;
   }, [selectedFolderPath]);
 
   useEffect(() => {
+    console.log("currentNoteId", currentNoteId, selectedNote?.id);
     if (excalidrawAPI) {
       excalidrawAPI.updateScene({
         elements: selectedNote?.excalidrawData,
       });
-      currentNote.current = selectedNote?.id;
+      setCurrentNoteId(selectedNote?.id);
     }
   }, [selectedNote]);
+
+  const throttleSave = useMemo(
+    () =>
+      throttle(() => {
+        console.log("throttle save");
+        setFolderDetails({ ...folderDetails });
+      }, 3000),
+    []
+  );
 
   if (!selectedNote) {
     return null;
   }
-
   return (
     <div>
       <motion.div
@@ -71,9 +86,8 @@ const Annote = ({ sidebarWidth }: AnnoteProps) => {
             },
           }}
           onChange={(excalidrawData) => {
-            if (currentNote.current === selectedNote.id) {
-              selectedNote.excalidrawData = [...excalidrawData];
-            }
+            selectedNote.excalidrawData = [...excalidrawData];
+            throttleSave();
           }}
         >
           <WelcomeScreen>

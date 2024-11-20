@@ -1,5 +1,6 @@
 - FEATURES
-    - Address bar for the note
+    - Address bar for the note @done
+
     - EXPLORER
         - Keyboard shortcuts to fast access the notes 
         - Collapse and expand the folders @done
@@ -16,7 +17,8 @@
 - Library 
 
 - BUG 
-    - When opening the inspect elemenet the size is same [Fixed by reloading website when resized]
+    - When opening the inspect elemenet the size is same [Fixed by reloading website when resized] @done
+    - Localstorage can contain data for another user. So will need to store a key in localstorage to tell whose data it is.
 
 
 - Shelved

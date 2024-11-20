@@ -58,15 +58,19 @@ const Home = ({ sidebarWidth }: { sidebarWidth: MotionValue<number> }) => {
             </BreadcrumbList>
           </Breadcrumb>
         </div>
-        <div style={{ ...globalStyles.flexRow, flex: 0, alignItems: "center" }}>
-          <div style={{ whiteSpace: "nowrap", marginRight: 24 }}>
-            <PinnedNotes />
+        {false && (
+          <div
+            style={{ ...globalStyles.flexRow, flex: 0, alignItems: "center" }}
+          >
+            <div style={{ whiteSpace: "nowrap", marginRight: 24 }}>
+              <PinnedNotes />
+            </div>
+            <Input
+              placeholder="Press CTRL + F to search"
+              style={{ width: "260px" }}
+            />
           </div>
-          <Input
-            placeholder="Press CTRL + F to search"
-            style={{ width: "260px" }}
-          />
-        </div>
+        )}
       </motion.div>
       {selectedFolderPath.length > 0 ? (
         <Annote sidebarWidth={sidebarWidth} />

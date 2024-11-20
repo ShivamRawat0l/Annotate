@@ -8,6 +8,7 @@ import {
 import type { UserType } from "../types/notes.type";
 import { useFolder } from "./FolderProvider";
 import { createUser, getDBData, getUserDB } from "../appwrite/database";
+import { DATA_STORAGE_KEY } from "../constants/Constants";
 
 type AuthenticationContextType = {
   user: UserType | null;
@@ -30,13 +31,42 @@ const AuthenticationProvider = ({
 }) => {
   const [user, setUser] = useState<UserType | null>(null);
   const [isLoading, setIsLoading] = useState(true);
-  const { resetData, fetchAppwriteFolders } = useFolder();
+  const { resetData, setFolderStructure, setFolderDetails, setUserEmail } =
+    useFolder();
 
   useEffect(() => {
     checkLogin().then(() => {
       setIsLoading(false);
     });
   }, []);
+
+  useEffect(() => {
+    if (!user) return;
+    setUserEmail(user.email);
+    const dataStorageKey = localStorage.getItem(DATA_STORAGE_KEY);
+    if (dataStorageKey) {
+      const data = JSON.parse(dataStorageKey);
+      if (
+        data.userEmail !== user.email &&
+        data.userEmail !== "__tempuser@temp.com__"
+      ) {
+        logout();
+      } else if (
+        Object.keys(data.folderDetails).length === 0 ||
+        Object.keys(data.folderStructure).length === 0
+      ) {
+        fetchAppwriteFolders(user.id);
+      }
+    } else {
+      fetchAppwriteFolders(user.id);
+    }
+  }, [user]);
+
+  const fetchAppwriteFolders = async (userId: string) => {
+    const notes = await getDBData(userId);
+    setFolderStructure(notes.structure);
+    setFolderDetails(notes.details);
+  };
 
   const checkLogin = async () => {
     try {
@@ -49,7 +79,6 @@ const AuthenticationProvider = ({
       }
       const annotatedUser = await getUserDB(user.$id);
       setUser(annotatedUser);
-      await fetchAppwriteFolders(user.$id);
     } catch (error) {
       logout();
     }

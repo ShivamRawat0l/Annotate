@@ -11,11 +11,12 @@ type NoteBarProps = {
 };
 
 export const NoteBar = ({ note, padding, parentId }: NoteBarProps) => {
-  const { getFolderDetails, selectedFolderPath, setSelectedFolderPath } =
+  const { folderDetails, selectedFolderPath, setSelectedFolderPath } =
     useFolder();
 
-  const noteDetails = useMemo(() => getFolderDetails(note), [note]);
-  if (noteDetails.type !== ElementType.NOTE) return null;
+  const noteDetails = useMemo(() => folderDetails[note], [note]);
+
+  if (noteDetails.type === ElementType.FOLDER) return null;
 
   return (
     <motion.div
@@ -37,6 +38,7 @@ export const NoteBar = ({ note, padding, parentId }: NoteBarProps) => {
             : "#aaffee00",
       }}
       onClick={() => {
+        console.log("clicked", parentId, note);
         setSelectedFolderPath([...parentId, note]);
       }}
     >

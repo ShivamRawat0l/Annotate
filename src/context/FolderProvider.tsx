@@ -11,7 +11,8 @@ import { toast } from "sonner";
 import { uuidv7 } from "uuidv7";
 import { DATA_STORAGE_KEY } from "../constants/Constants";
 import { getChainedObject } from "../utils/array";
-import { getDBData, updateNote } from "../appwrite/database";
+import { getDBData } from "../appwrite/database";
+import { useAuth } from "./AuthenticationProvider";
 
 type FolderContextType = {
   folderStructure: FolderStructure;
@@ -26,10 +27,10 @@ type FolderContextType = {
   renameFolder: (folderId: string, newTitle: string) => void;
   collapseSubFolders: (folderPath: string[]) => void;
   isLoading: boolean;
-  getFolderDetails: (id: string) => FolderType | NoteType;
-  getFolderStorageObject: () => string;
-  fetchAppwriteFolders: (userId: string) => void;
   folderDetails: FolderData;
+  setFolderDetails: React.Dispatch<React.SetStateAction<FolderData>>;
+  userEmail: string;
+  setUserEmail: React.Dispatch<React.SetStateAction<string>>;
 };
 
 const FolderContext = createContext<FolderContextType | undefined>(undefined);
@@ -39,8 +40,7 @@ const FolderProvider = ({ children }: { children: React.ReactNode }) => {
   const [folderDetails, setFolderDetails] = useState<FolderData>({});
   const [isLoading, setIsLoading] = useState(false);
   const [selectedFolderPath, setSelectedFolderPath] = useState<string[]>([]);
-
-  const isLocalDataFetched = useRef(false);
+  const [userEmail, setUserEmail] = useState<string>("__tempuser@temp.com__");
 
   useEffect(() => {
     loadConfig();
@@ -54,23 +54,6 @@ const FolderProvider = ({ children }: { children: React.ReactNode }) => {
     saveFolderData();
   }, [folderStructure, folderDetails]);
 
-  const fetchAppwriteFolders = async (userId: string) => {
-    if (
-      userId &&
-      !isLocalDataFetched.current &&
-      Object.keys(folderStructure).length === 0 &&
-      Object.keys(folderDetails).length === 0
-    ) {
-      const notes = await getDBData(userId);
-      setFolderStructure(notes.structure);
-      setFolderDetails(notes.details);
-    }
-  };
-
-  const getFolderStorageObject = () => {
-    return JSON.stringify({ folderStructure, folderDetails });
-  };
-
   const saveConfig = () => {
     localStorage.setItem("config", JSON.stringify({}));
   };
@@ -78,7 +61,7 @@ const FolderProvider = ({ children }: { children: React.ReactNode }) => {
   const saveFolderData = () => {
     localStorage.setItem(
       DATA_STORAGE_KEY,
-      JSON.stringify({ folderStructure, folderDetails })
+      JSON.stringify({ folderStructure, folderDetails, userEmail })
     );
   };
 
@@ -89,12 +72,10 @@ const FolderProvider = ({ children }: { children: React.ReactNode }) => {
   const loadData = () => {
     const data = localStorage.getItem(DATA_STORAGE_KEY);
     if (data) {
-      console.log("Local Data", data);
       const fetchedData = JSON.parse(data);
-      console.log("Fetched Data", fetchedData);
+      setUserEmail(fetchedData.userEmail);
       setFolderStructure(fetchedData.folderStructure);
       setFolderDetails(fetchedData.folderDetails);
-      isLocalDataFetched.current = true;
     }
   };
 
@@ -102,6 +83,7 @@ const FolderProvider = ({ children }: { children: React.ReactNode }) => {
     setFolderStructure({});
     setFolderDetails({});
     setSelectedFolderPath([]);
+    localStorage.clear();
   };
 
   const collapseSubFolders = (folderPath: FolderPath) => {
@@ -178,10 +160,6 @@ const FolderProvider = ({ children }: { children: React.ReactNode }) => {
     setFolderDetails({ ...folderDetails });
   };
 
-  const getFolderDetails = (id: string) => {
-    return folderDetails[id];
-  };
-
   return (
     <FolderContext.Provider
       value={{
@@ -190,7 +168,6 @@ const FolderProvider = ({ children }: { children: React.ReactNode }) => {
         resetData,
         createNewFolder,
         createNewNote,
-        fetchAppwriteFolders,
         deleteFolder,
         selectedFolderPath,
         setSelectedFolderPath,
@@ -198,9 +175,10 @@ const FolderProvider = ({ children }: { children: React.ReactNode }) => {
         renameFolder,
         collapseSubFolders,
         isLoading,
-        getFolderDetails,
-        getFolderStorageObject,
         folderDetails,
+        setFolderDetails,
+        userEmail,
+        setUserEmail,
       }}
     >
       {children}

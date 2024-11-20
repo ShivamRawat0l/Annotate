@@ -15,14 +15,14 @@ export const ExplorerFolders = ({
 }: ExplorerFoldersType) => {
   return (
     <>
-      {Object.keys(folders).map((folder) => {
+      {Object.keys(folders).map((folderId) => {
         return (
           <FolderComponent
-            folderId={folder}
-            subFolders={folders[folder]}
-            key={folder}
-            padding={padding}
+            folderId={folderId}
+            subFolders={folders[folderId]}
             parentId={parentId}
+            key={folderId}
+            padding={padding}
           />
         );
       })}
