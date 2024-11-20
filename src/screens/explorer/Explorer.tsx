@@ -14,8 +14,8 @@ import "../css/Scrollbar.css";
 import { useAuth } from "@/src/context/AuthenticationProvider";
 export const Explorer = () => {
   const {
-    data,
-    selectedFolder,
+    folderStructure,
+    selectedFolderPath,
     createNewFolder,
     createNewNote,
     toggleFolderExpand,
@@ -29,31 +29,31 @@ export const Explorer = () => {
     return () => {
       document.removeEventListener("keydown", authShortcuts);
     };
-  }, [user, data]);
+  }, [user, folderStructure]);
 
   useEffect(() => {
     document.addEventListener("keydown", shortcuts);
     return () => {
       document.removeEventListener("keydown", shortcuts);
     };
-  }, [selectedFolder]);
+  }, [selectedFolderPath]);
 
   const shortcuts = (e: KeyboardEvent) => {
     if (e.repeat) return;
-    if (e.key.toLowerCase() === "r" && e.shiftKey && selectedFolder) {
-      setFolderEditing(selectedFolder.id);
+    if (e.key.toLowerCase() === "r" && e.shiftKey && selectedFolderPath) {
+      setFolderEditing(selectedFolderPath.last ?? "");
     }
-    if (e.key.toLowerCase() === "a" && e.shiftKey && selectedFolder) {
-      createNewFolder(selectedFolder);
+    if (e.key.toLowerCase() === "a" && e.shiftKey && selectedFolderPath) {
+      createNewFolder(selectedFolderPath);
     }
-    if (e.key.toLowerCase() === "n" && e.shiftKey && selectedFolder) {
-      createNewNote(selectedFolder);
+    if (e.key.toLowerCase() === "n" && e.shiftKey && selectedFolderPath) {
+      createNewNote(selectedFolderPath);
     }
-    if (e.key.toLowerCase() === "t" && e.shiftKey && selectedFolder) {
-      toggleFolderExpand(selectedFolder, !selectedFolder.isExpanded);
+    if (e.key.toLowerCase() === "t" && e.shiftKey && selectedFolderPath) {
+      toggleFolderExpand(selectedFolderPath.last);
     }
-    if (e.key.toLowerCase() === "d" && e.shiftKey && selectedFolder) {
-      // deleteFolder(selectedFolder);
+    if (e.key.toLowerCase() === "d" && e.shiftKey && selectedFolderPath) {
+      // deleteFolder(selectedFolderPath);
     }
   };
 
@@ -86,7 +86,7 @@ export const Explorer = () => {
         <div style={{ margin: 10, fontSize: 10, fontWeight: "thin" }}>
           Notes
         </div>
-        <PlusSquare size={16} onClick={() => createNewFolder()} />
+        <PlusSquare size={16} onClick={() => createNewFolder([])} />
       </div>
       <div
         style={{
@@ -95,8 +95,8 @@ export const Explorer = () => {
           minWidth: 240,
         }}
       >
-        <ExplorerFolders folders={data} />
-        {data.length === 0 && (
+        <ExplorerFolders folders={folderStructure} />
+        {Object.keys(folderStructure).length === 0 && (
           <div
             style={{
               border: "2px dashed gray",
@@ -111,7 +111,7 @@ export const Explorer = () => {
               flex: 1,
               padding: 20,
             }}
-            onClick={() => createNewFolder()}
+            onClick={() => createNewFolder([])}
           >
             <PlusSquare style={{ marginRight: 10 }} />
             Create folder

@@ -11,14 +11,14 @@ import { LoginPopup } from "./popup/LoginPopup";
 import { useEffect } from "react";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { Loading } from "./home/components/Loading";
-
+import "@/src/utils/prototype";
 const App = () => {
   const { sidebarOpen } = useLayout();
 
   const motionValue = useMotionValue(DEFAULT_SIDEBAR_WIDTH);
   const remainingWidth = useTransform(
     motionValue,
-    (value) => SCREEN_WIDTH - value
+    (value) => SCREEN_WIDTH - value - 4
   );
 
   useEffect(() => {
@@ -52,7 +52,7 @@ const App = () => {
                   <motion.div
                     className="app-sidebar-resizer"
                     style={{
-                      width: "4px",
+                      width: 4,
                       backgroundColor: "black",
                       height: "100vh",
                     }}

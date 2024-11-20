@@ -1,14 +1,19 @@
 import { Permission, Role } from "appwrite";
 import { databases } from "./client";
-import type { FolderType, UserType } from "@/src/types/notes.type";
+import type { UserType, FolderData } from "@/src/types/notes.type.ts";
 
 const databaseId = process.env.APPWRITE_DATABASE_ID as string;
 const notesCollectionId = process.env.APPWRITE_NOTES_COLLECTION_ID as string;
 const userCollectionId = process.env.APPWRITE_USER_COLLECTION_ID as string;
 
-export const updateNote = async (userId: string, note: FolderType[]) => {
+export const updateNote = async (
+  userId: string,
+  structure: string,
+  details: string
+) => {
   await databases.updateDocument(databaseId, notesCollectionId, userId, {
-    data: note.map((note) => JSON.stringify(note)),
+    structure,
+    details,
   });
 };
 
@@ -28,13 +33,23 @@ export const getUserDB: (userId: string) => Promise<UserType> = async (
   };
 };
 
-export const getNotesDB = async (userId: string) => {
+export const getDBData = async (userId: string) => {
   const notes = await databases.getDocument(
     databaseId,
     notesCollectionId,
     userId
   );
-  return { notes: notes.data.map((note: string) => JSON.parse(note)) };
+  try {
+    return {
+      structure: JSON.parse(notes.structure),
+      details: JSON.parse(notes.details),
+    };
+  } catch (error) {
+    return {
+      structure: {},
+      details: {},
+    };
+  }
 };
 
 const createUserDocument = async (userId: string, user: UserType) => {
@@ -55,7 +70,8 @@ const createNotesDocument = async (userId: string) => {
     notesCollectionId,
     userId,
     {
-      data: [],
+      structure: JSON.stringify({}),
+      details: JSON.stringify({}),
     },
     [Permission.read(Role.user(userId)), Permission.update(Role.user(userId))]
   );

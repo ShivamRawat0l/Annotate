@@ -1,10 +1,6 @@
-import { Button } from "@/components/ui/button";
-import { updateNote } from "@/src/appwrite/database";
 import { useAuth } from "@/src/context/AuthenticationProvider";
-import { useFolder } from "@/src/context/FolderProvider";
 import { GoogleButton } from "../components/GoogleButton";
 import {
-  FolderSyncIcon,
   LogOutIcon,
   PlusSquare,
   RefreshCcwDotIcon,
@@ -20,7 +16,6 @@ const CustomRefreshCcwDotIcon = motion(RefreshCcwDotIcon);
 
 export const ExplorerFooter = () => {
   const { user, googleLogin, logout } = useAuth();
-  const { data, setData, setSelectedNote, createNewFolder } = useFolder();
   const { isSyncing, syncNotesOnline } = useExplorer();
   const isAnimating = useRef(false);
 

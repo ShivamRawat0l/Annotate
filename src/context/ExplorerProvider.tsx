@@ -4,8 +4,8 @@ import { useFolder } from "./FolderProvider";
 import { useAuth } from "./AuthenticationProvider";
 import { throttle } from "../utils/throttle";
 type ExplorerContextType = {
-  folderEditing: string | null;
-  setFolderEditing: (id: string | null) => void;
+  folderEditing: string;
+  setFolderEditing: (folderPath: string) => void;
   isSyncing: boolean;
   syncNotesOnline: () => void;
 };
@@ -19,15 +19,19 @@ export const ExplorerProvider = ({
 }: {
   children: React.ReactNode;
 }) => {
-  const [folderEditing, setFolderEditing] = useState<string | null>(null);
+  const [folderEditing, setFolderEditing] = useState<string>("");
   const { user } = useAuth();
-  const { data } = useFolder();
+  const { folderStructure, folderDetails } = useFolder();
   const [isSyncing, setIsSyncing] = useState(false);
 
   const throttleSync = async () => {
     if (!user) return;
     setIsSyncing(true);
-    await updateNote(user.id, data).then(() => {
+    await updateNote(
+      user.id,
+      JSON.stringify(folderStructure),
+      JSON.stringify(folderDetails)
+    ).then(() => {
       setIsSyncing(false);
     });
   };

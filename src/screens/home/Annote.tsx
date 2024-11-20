@@ -1,32 +1,36 @@
 import { Excalidraw, WelcomeScreen } from "@excalidraw/excalidraw";
-import type { NoteType } from "../../types/notes.type";
-import type { Data } from "../../types/notes.type";
 import { useFolder } from "@/src/context/FolderProvider";
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, useMemo } from "react";
 import type { ExcalidrawImperativeAPI } from "@excalidraw/excalidraw/types/types";
 import { getTheme } from "@/components/theme-provider";
 import { Colors } from "@/src/constants/Colors";
 import { motion, MotionValue } from "framer-motion";
+import { ElementType, type NoteType } from "@/src/types/notes.type";
+import { NOTES_SUFFIX } from "@/src/constants/Constants";
 
-type Props = {};
+type AnnoteProps = {
+  sidebarWidth: MotionValue<number>;
+};
 
-const Annote = ({ sidebarWidth }: { sidebarWidth: MotionValue<number> }) => {
-  const { data, setData, selectedNote } = useFolder();
+const Annote = ({ sidebarWidth }: AnnoteProps) => {
+  const { selectedFolderPath, getFolderDetails } = useFolder();
   const currentNote = useRef<string | undefined>(undefined);
   const theme = getTheme();
   const [excalidrawAPI, setExcalidrawAPI] =
     useState<ExcalidrawImperativeAPI | null>(null);
 
-  const handleFileDownload = () => {
-    const element = document.createElement("a");
-    const file = new Blob([JSON.stringify(data)], {
-      type: "application/json",
-    });
-    element.href = URL.createObjectURL(file);
-    element.download = "myFile.json";
-    document.body.appendChild(element);
-    element.click();
-  };
+  const selectedNote: NoteType | undefined = useMemo(() => {
+    let selectedNoteId = selectedFolderPath.last;
+    if (
+      selectedFolderPath &&
+      selectedNoteId &&
+      selectedNoteId.endsWith(NOTES_SUFFIX) &&
+      getFolderDetails(selectedNoteId).type === ElementType.NOTE
+    ) {
+      return getFolderDetails(selectedNoteId) as NoteType;
+    }
+    return undefined;
+  }, [selectedFolderPath]);
 
   useEffect(() => {
     if (excalidrawAPI) {
@@ -69,7 +73,6 @@ const Annote = ({ sidebarWidth }: { sidebarWidth: MotionValue<number> }) => {
           onChange={(excalidrawData) => {
             if (currentNote.current === selectedNote.id) {
               selectedNote.excalidrawData = [...excalidrawData];
-              setData(data);
             }
           }}
         >

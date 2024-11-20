@@ -6,29 +6,21 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
-import {
-  ContextMenu,
-  ContextMenuTrigger,
-  ContextMenuContent,
-  ContextMenuItem,
-} from "@/components/ui/context-menu";
-import { useEffect, useState } from "react";
 import Annote from "./Annote";
-import type { Data, FolderType, NoteType } from "../../types/notes.type";
 import { useFolder } from "@/src/context/FolderProvider";
 import { Colors } from "@/src/constants/Colors";
 import { getTheme } from "@/components/theme-provider";
 import { Toaster } from "@/components/ui/sonner";
-import { SCREEN_WIDTH } from "@/src/constants/Constants";
-import { useLayout } from "@/src/context/LayoutProvider";
 import { motion, MotionValue } from "framer-motion";
 import { Input } from "@/components/ui/input";
 import { globalStyles } from "@/src/constants/Styles";
 import { Search } from "../search/Search";
 import { PinnedNotes } from "./components/PinnedNotes";
+import { Slash } from "lucide-react";
+import React from "react";
 
 const Home = ({ sidebarWidth }: { sidebarWidth: MotionValue<number> }) => {
-  const { selectedNote } = useFolder();
+  const { selectedFolderPath, folderDetails } = useFolder();
   const theme = getTheme();
 
   return (
@@ -39,53 +31,48 @@ const Home = ({ sidebarWidth }: { sidebarWidth: MotionValue<number> }) => {
         backgroundColor: Colors[theme].background,
       }}
     >
-      <div style={styles.container}>
-        <motion.div
-          style={{
-            height: "4vh",
-            ...globalStyles.flexRow,
-            justifyContent: "space-between",
-            alignItems: "center",
-            width: sidebarWidth,
-            paddingLeft: 40,
-            paddingRight: 40,
-          }}
-        >
-          <div>
-            <Breadcrumb>
-              <BreadcrumbList>
-                <BreadcrumbItem>
-                  <BreadcrumbLink>Home</BreadcrumbLink>
-                </BreadcrumbItem>
-                <BreadcrumbSeparator />
-                <BreadcrumbItem>
-                  <BreadcrumbLink>Components</BreadcrumbLink>
-                </BreadcrumbItem>
-                <BreadcrumbSeparator />
-                <BreadcrumbItem>
-                  <BreadcrumbPage>Breadcrumb</BreadcrumbPage>
-                </BreadcrumbItem>
-              </BreadcrumbList>
-            </Breadcrumb>
+      <motion.div
+        style={{
+          height: "4vh",
+          ...globalStyles.flexRow,
+          justifyContent: "space-between",
+          alignItems: "flex-start",
+          width: sidebarWidth,
+          paddingLeft: 40,
+          paddingRight: 40,
+        }}
+      >
+        <div>
+          <Breadcrumb>
+            <BreadcrumbList>
+              {selectedFolderPath.map((folderId) => (
+                <React.Fragment key={folderId}>
+                  <BreadcrumbSeparator />
+                  <BreadcrumbItem>
+                    <BreadcrumbLink>
+                      {folderDetails[folderId].title}
+                    </BreadcrumbLink>
+                  </BreadcrumbItem>
+                </React.Fragment>
+              ))}
+            </BreadcrumbList>
+          </Breadcrumb>
+        </div>
+        <div style={{ ...globalStyles.flexRow, flex: 0, alignItems: "center" }}>
+          <div style={{ whiteSpace: "nowrap", marginRight: 24 }}>
+            <PinnedNotes />
           </div>
-          <div
-            style={{ ...globalStyles.flexRow, flex: 0, alignItems: "center" }}
-          >
-            <div style={{ whiteSpace: "nowrap", marginRight: 24 }}>
-              <PinnedNotes />
-            </div>
-            <Input
-              placeholder="Press CTRL + F to search"
-              style={{ width: "260px" }}
-            />
-          </div>
-        </motion.div>
-        {selectedNote ? (
-          <Annote sidebarWidth={sidebarWidth} />
-        ) : (
-          <Search sidebarWidth={sidebarWidth} />
-        )}
-      </div>
+          <Input
+            placeholder="Press CTRL + F to search"
+            style={{ width: "260px" }}
+          />
+        </div>
+      </motion.div>
+      {selectedFolderPath.length > 0 ? (
+        <Annote sidebarWidth={sidebarWidth} />
+      ) : (
+        <Search sidebarWidth={sidebarWidth} />
+      )}
       <Toaster />
     </motion.div>
   );

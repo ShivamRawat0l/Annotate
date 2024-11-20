@@ -13,6 +13,7 @@ export const Loading = () => {
   const progress = useMemo(() => {
     return (isLoading ? 50 : 0) + (isLoadingFolder ? 50 : 0);
   }, [isLoading, isLoadingFolder]);
+  console.log(isLoading, isLoadingFolder);
 
   if (!isLoading && !isLoadingFolder) return null;
   return (
@@ -29,6 +30,7 @@ export const Loading = () => {
         flexDirection: "column",
         background: Colors[theme].background,
         gap: 20,
+        zIndex: 1000,
       }}
     >
       <div

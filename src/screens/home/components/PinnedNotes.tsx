@@ -16,7 +16,7 @@ export const PinnedNotes = () => {
   return (
     <Popover open={popupOpened}>
       <PopoverTrigger onClick={() => setPopupOpened((e) => !e)}>
-        {popupOpened ? "Close" : "Open"} 📌 Notes
+        {popupOpened ? "📌" : "📌"}
       </PopoverTrigger>
       <PopoverContent
         style={{

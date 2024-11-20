@@ -7,7 +7,7 @@ import {
 } from "../appwrite/authentication";
 import type { UserType } from "../types/notes.type";
 import { useFolder } from "./FolderProvider";
-import { createUser, getNotesDB, getUserDB } from "../appwrite/database";
+import { createUser, getDBData, getUserDB } from "../appwrite/database";
 
 type AuthenticationContextType = {
   user: UserType | null;
@@ -30,7 +30,7 @@ const AuthenticationProvider = ({
 }) => {
   const [user, setUser] = useState<UserType | null>(null);
   const [isLoading, setIsLoading] = useState(true);
-  const { resetData, setData } = useFolder();
+  const { resetData, fetchAppwriteFolders } = useFolder();
 
   useEffect(() => {
     checkLogin().then(() => {
@@ -47,10 +47,9 @@ const AuthenticationProvider = ({
       } catch {
         console.log("User already exists");
       }
-      const notes = await getNotesDB(user.$id);
-      setData(notes.notes);
       const annotatedUser = await getUserDB(user.$id);
       setUser(annotatedUser);
+      await fetchAppwriteFolders(user.$id);
     } catch (error) {
       logout();
     }
