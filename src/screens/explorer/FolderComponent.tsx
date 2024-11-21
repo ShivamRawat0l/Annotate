@@ -1,4 +1,4 @@
-import { useMemo, useRef } from "react";
+import { useCallback, useMemo, useRef } from "react";
 
 import { useExplorer } from "@/src/context/ExplorerProvider";
 import { useFolder } from "@/src/context/FolderProvider";
@@ -23,6 +23,7 @@ import { NoteBar } from "./NoteBar";
 import { ExplorerFolders } from "./ExplorerFolder";
 import { ExplorerContextMenu } from "./ExplorerContextMenu";
 import { globalStyles, type Style } from "@/src/constants/Styles";
+import { ErrorBoundary } from "react-error-boundary";
 
 type FolderComponentProps = {
   folderId: string;
@@ -80,13 +81,13 @@ export const FolderComponent = ({
                 noteId={noteId}
                 key={noteId}
                 padding={padding + 20}
-                parentId={[...parentId, folderId]}
+                parentId={folderPath}
               />
             ))}
           <ExplorerFolders
             folders={filteredSubFolders}
             padding={padding + 20}
-            parentId={[...parentId, folderId]}
+            parentId={folderPath}
           />
         </div>
       </CollapsibleContent>
@@ -175,8 +176,84 @@ export const FolderComponent = ({
     );
   };
 
+  const onDragOver = useCallback((e: any) => {
+    e.preventDefault();
+    e.stopPropagation();
+    dragHover.set(1);
+  }, []);
+
+  const onDragLeave = useCallback((e: any) => {
+    e.preventDefault();
+    e.stopPropagation();
+    dragHover.set(0);
+  }, []);
+
+  const renderFolderIcons = () => {
+    if (folderDetails[folderId].type === ElementType.NOTE) return null;
+    return (
+      <div style={styles.folderIcon}>
+        <MotionChevronRight
+          animate={{
+            rotate: folderDetails[folderId].isExpanded ? 90 : 0,
+          }}
+          transition={{
+            duration: 0.2,
+            ease: "easeInOut",
+          }}
+        />
+        {folderDetails.isExpanded ? (
+          <FolderOpen size={20} />
+        ) : folderDetails[folderId].count == 0 ? (
+          <Folder size={20} />
+        ) : (
+          <Folders size={20} />
+        )}
+      </div>
+    );
+  };
+
+  const renderCollapseSubFolders = () => {
+    if (folderDetails[folderId].type === ElementType.NOTE) return null;
+    return (
+      <>
+        {folderDetails[folderId].count > 0 &&
+          folderDetails[folderId].isExpanded &&
+          Object.keys(subFolders).find((subFolderId) => {
+            const subFolderDetails = folderDetails[subFolderId];
+            if (
+              subFolderDetails == undefined ||
+              subFolderDetails.type === ElementType.NOTE
+            )
+              return false;
+            return subFolderDetails.isExpanded;
+          }) &&
+          selectedFolderPath?.join("") === folderPath.join("") && (
+            <div
+              className="cursor-pointer"
+              style={{
+                borderBottomLeftRadius: 8,
+                borderBottomRightRadius: 8,
+                paddingLeft: 20,
+                paddingTop: 1,
+                paddingBottom: 1,
+                fontSize: 8,
+                backgroundColor: "skyblue",
+              }}
+              onClick={() => {
+                collapseSubFolders(folderPath);
+              }}
+            >
+              Collapse subfolders
+            </div>
+          )}
+      </>
+    );
+  };
+
   return (
-    <>
+    <ErrorBoundary
+      fallback={<p>Something went wrong in the Folder Component</p>}
+    >
       {folderDetails[folderId] &&
         folderDetails[folderId].type === ElementType.FOLDER && (
           <motion.div
@@ -191,16 +268,8 @@ export const FolderComponent = ({
                 ["rgba(0, 0, 0, 0)", "rgba(255, 0, 0, 1)"]
               ),
             }}
-            onDragOver={(e) => {
-              e.preventDefault();
-              e.stopPropagation();
-              dragHover.set(1);
-            }}
-            onDragLeave={(e) => {
-              e.preventDefault();
-              e.stopPropagation();
-              dragHover.set(0);
-            }}
+            onDragOver={onDragOver}
+            onDragLeave={onDragLeave}
             onDrop={(e) => {
               e.stopPropagation();
               e.preventDefault();
@@ -212,7 +281,6 @@ export const FolderComponent = ({
             }}
           >
             <Collapsible
-              className="group/collapsible [&[data-state=open]>button>svg:first-child]:rotate-90"
               open={folderDetails[folderId].isExpanded}
               onOpenChange={(open) => {
                 toggleFolderExpand(folderId, open);
@@ -221,7 +289,6 @@ export const FolderComponent = ({
               <ExplorerContextMenu>
                 <motion.div
                   draggable
-                  //data-folder-id={[...parentId, folder.id]}
                   onDragStart={(e: any) => {
                     e.dataTransfer.setData(
                       "application/json",
@@ -230,18 +297,15 @@ export const FolderComponent = ({
                       })
                     );
                   }}
-                  whileHover={{ backgroundColor: "#aaffee33" }}
-                  transition={{ duration: 0.2 }}
                   onContextMenu={() => setSelectedFolderPath(folderPath)}
                   onClick={() => setSelectedFolderPath(folderPath)}
                   onMouseOver={() => {
                     setHover(true);
                   }}
-                  // TODO: change to theme color
                   style={{
                     backgroundColor:
                       selectedFolderPath?.join("") === folderPath.join("")
-                        ? "#aaffee33"
+                        ? ""
                         : "#aaffee00",
                     display: "flex",
                     borderRadius: 4,
@@ -259,66 +323,19 @@ export const FolderComponent = ({
                     }}
                   >
                     <CollapsibleTrigger>
-                      <div style={styles.folderIcon}>
-                        <MotionChevronRight
-                          animate={{
-                            rotate: folderDetails[folderId].isExpanded ? 90 : 0,
-                          }}
-                          transition={{
-                            duration: 0.2,
-                            ease: "easeInOut",
-                          }}
-                        />
-                        {folderDetails.isExpanded ? (
-                          <FolderOpen size={20} />
-                        ) : folderDetails[folderId].count == 0 ? (
-                          <Folder size={20} />
-                        ) : (
-                          <Folders size={20} />
-                        )}
-                      </div>
+                      {renderFolderIcons()}
                     </CollapsibleTrigger>
                     {renderTitle()}
                   </div>
                   {renderFolderOptions()}
                 </motion.div>
               </ExplorerContextMenu>
-
-              {folderDetails[folderId].count > 0 &&
-                folderDetails[folderId].isExpanded &&
-                Object.keys(subFolders).find((subFolderId) => {
-                  const subFolderDetails = folderDetails[subFolderId];
-                  if (
-                    subFolderDetails == undefined ||
-                    subFolderDetails.type === ElementType.NOTE
-                  )
-                    return false;
-                  return subFolderDetails.isExpanded;
-                }) &&
-                selectedFolderPath?.join("-") == folderPath.join("-") && (
-                  <div
-                    className="cursor-pointer"
-                    style={{
-                      borderBottomLeftRadius: 8,
-                      borderBottomRightRadius: 8,
-                      paddingLeft: 20,
-                      paddingTop: 1,
-                      paddingBottom: 1,
-                      fontSize: 8,
-                      backgroundColor: "skyblue",
-                    }}
-                    onClick={() => {
-                      collapseSubFolders(folderPath);
-                    }}
-                  >
-                    Collapse subfolders
-                  </div>
-                )}
+              {renderCollapseSubFolders()}
               {renderSubFolders()}
             </Collapsible>
           </motion.div>
         )}
-    </>
+    </ErrorBoundary>
   );
 };
 

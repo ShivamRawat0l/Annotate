@@ -1,11 +1,6 @@
 import { useAuth } from "@/src/context/AuthenticationProvider";
 import { GoogleButton } from "../components/GoogleButton";
-import {
-  LogOutIcon,
-  PlusSquare,
-  RefreshCcwDotIcon,
-  RefreshCwIcon,
-} from "lucide-react";
+import { LogOutIcon, RefreshCcwDotIcon, RefreshCwIcon } from "lucide-react";
 import { globalStyles } from "@/src/constants/Styles";
 import { useEffect, useRef, useState } from "react";
 import { motion } from "framer-motion";
@@ -32,77 +27,92 @@ export const ExplorerFooter = () => {
       isAnimating.current = false;
     }
   };
-  return (
-    <>
-      {!user ? (
-        <div
-          style={{
-            ...globalStyles.flexRow,
-            flex: 0,
-            alignItems: "center",
-            justifyContent: "center",
-            paddingTop: 30,
-            paddingBottom: 30,
-            paddingLeft: 18,
-            paddingRight: 18,
-          }}
-        >
-          <GoogleButton onClick={googleLogin} />
+
+  const renderLogin = () => {
+    <div
+      style={{
+        ...globalStyles.flexRow,
+        flex: 0,
+        alignItems: "center",
+        justifyContent: "center",
+        paddingTop: 30,
+        paddingBottom: 30,
+        paddingLeft: 18,
+        paddingRight: 18,
+      }}
+    >
+      <GoogleButton onClick={googleLogin} />
+    </div>;
+  };
+
+  const renderUserAvatar = () => {
+    return (
+      <div style={{ width: 40, height: 40 }}>
+        <Avatar>
+          <AvatarImage src={user?.photoUrl} />
+          <AvatarFallback>
+            {(user?.name ?? "4 0 4")
+              .split(" ")
+              .map((n) => n[0])
+              .join("")}
+          </AvatarFallback>
+        </Avatar>
+      </div>
+    );
+  };
+
+  const renderSyncStatus = () => {
+    return (
+      <div style={{ ...globalStyles.flexColumn }}>
+        <div style={{ fontSize: 14 }}>Synced 5 minutes ago</div>
+        <div style={{ fontSize: 10, color: "gray" }}>
+          Press Ctrl + S to save
         </div>
-      ) : (
-        <div
-          style={{
-            ...globalStyles.flexRow,
-            flex: 0,
-            alignItems: "center",
-            paddingTop: 30,
-            paddingBottom: 30,
-            paddingLeft: 18,
-            paddingRight: 18,
-            justifyContent: "space-between",
-            gap: 10,
-            borderBottom: "4px solid #e0ffe0",
+      </div>
+    );
+  };
+
+  const renderUser = () => {
+    return (
+      <div
+        style={{
+          ...globalStyles.flexRow,
+          flex: 0,
+          alignItems: "center",
+          paddingTop: 30,
+          paddingBottom: 30,
+          paddingLeft: 18,
+          paddingRight: 18,
+          justifyContent: "space-between",
+          gap: 10,
+          borderBottom: "4px solid #e0ffe0",
+        }}
+      >
+        {renderUserAvatar()}
+        {renderSyncStatus()}
+        <CustomRefreshCcwDotIcon
+          onAnimationStart={() => {
+            isAnimating.current = true;
           }}
-        >
-          <div style={{ width: 40, height: 40 }}>
-            <Avatar>
-              <AvatarImage src={user.photoUrl} />
-              <AvatarFallback>
-                {(user.name ?? "4 0 4")
-                  .split(" ")
-                  .map((n) => n[0])
-                  .join("")}
-              </AvatarFallback>
-            </Avatar>
-          </div>
-          <div style={{ ...globalStyles.flexColumn }}>
-            <div style={{ fontSize: 14 }}>Synced 5 minutes ago</div>
-            <div style={{ fontSize: 10, color: "gray" }}>
-              Press Ctrl + S to save
-            </div>
-          </div>
-          <CustomRefreshCcwDotIcon
-            onAnimationStart={() => {
-              isAnimating.current = true;
-            }}
-            onAnimationComplete={handleAnimationComplete}
-            initial={{
-              rotateZ: 0,
-            }}
-            animate={{
-              rotateZ: isSyncing || isAnimating.current ? 360 : 0,
-            }}
-            transition={{
-              duration: 1,
-              ease: "anticipate",
-            }}
-            onClick={() => {
-              syncNotesOnline();
-            }}
-          />
-          <LogOutIcon onClick={() => logout()} />
-        </div>
-      )}
-    </>
-  );
+          onAnimationComplete={handleAnimationComplete}
+          initial={{
+            rotateZ: 0,
+          }}
+          animate={{
+            rotateZ: isSyncing || isAnimating.current ? 360 : 0,
+          }}
+          transition={{
+            duration: 1,
+            ease: "anticipate",
+          }}
+          onClick={() => {
+            syncNotesOnline();
+          }}
+        />
+        <LogOutIcon onClick={() => logout()} />
+      </div>
+    );
+  };
+
+  return <>{!user ? renderLogin() : renderUser()}</>;
 };

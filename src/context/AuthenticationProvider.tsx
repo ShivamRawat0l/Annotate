@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect, useState } from "react";
+import { createContext, useContext, useEffect, useMemo, useState } from "react";
 import {
   getUser,
   logoutUser,
@@ -89,10 +89,18 @@ const AuthenticationProvider = ({
     setUser(null);
   };
 
+  const contextValue = useMemo(
+    () => ({
+      user,
+      googleLogin,
+      logout,
+      isLoading,
+    }),
+    [user, isLoading]
+  );
+
   return (
-    <AuthenticationContext.Provider
-      value={{ user, googleLogin, logout, isLoading }}
-    >
+    <AuthenticationContext.Provider value={contextValue}>
       {children}
     </AuthenticationContext.Provider>
   );

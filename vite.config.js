@@ -11,6 +11,18 @@ export default defineConfig({
       "@": resolve(__dirname, "./"), // Points @ to the src directory
     },
   },
+  build: {
+    chunkSizeWarningLimit: 400,
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          // Group vendor dependencies into their own chunk
+          vendor: ["react", "react-dom"],
+          // You can add more manual chunks as needed
+        },
+      },
+    },
+  },
   define: {
     "process.env.IS_PREACT": Bun.env.IS_PREACT,
     "process.env.APPWRITE_PROJECT_ID": `'${Bun.env.APPWRITE_PROJECT_ID}'`,

@@ -16,10 +16,8 @@ type AnnoteProps = {
 
 const Annote = ({ sidebarWidth }: AnnoteProps) => {
   const { selectedFolderPath, folderDetails, setFolderDetails } = useFolder();
+  const [currentNoteId, setCurrentNoteId] = useState<string>("");
   const theme = getTheme();
-  const [currentNoteId, setCurrentNoteId] = useState<string | undefined>(
-    undefined
-  );
 
   const initialAppState = {
     viewBackgroundColor: Colors[theme].background,
@@ -44,13 +42,12 @@ const Annote = ({ sidebarWidth }: AnnoteProps) => {
   }, [selectedFolderPath]);
 
   useEffect(() => {
-    console.log(selectedNote);
     if (excalidrawAPI) {
       excalidrawAPI.updateScene({
         elements: selectedNote?.excalidrawData,
         appState: initialAppState,
       });
-      setCurrentNoteId(selectedNote?.id);
+      setCurrentNoteId(selectedNote?.id || "");
     }
   }, [selectedNote]);
 

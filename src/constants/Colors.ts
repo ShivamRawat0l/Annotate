@@ -21,7 +21,7 @@ const zinc_700 = "#3f3f46";
 
 export const Colors: ThemeColors = {
   dark: {
-    primary: "#222",
+    primary: "#ff9f5c",
     secondary: "#333",
     tertiary: zinc_700,
     background: zinc_950,

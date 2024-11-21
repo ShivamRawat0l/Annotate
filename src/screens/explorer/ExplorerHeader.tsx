@@ -1,7 +1,11 @@
 import Logo from "@/assets/icon.png";
+import { getTheme } from "@/components/theme-provider";
+import { Colors } from "@/src/constants/Colors";
 import { globalStyles } from "@/src/constants/Styles";
+import { motion } from "framer-motion";
 
 export const ExploerHeader = () => {
+  const theme = getTheme();
   return (
     <div
       style={{
@@ -10,32 +14,37 @@ export const ExploerHeader = () => {
         flex: 0,
         marginLeft: 16,
         marginRight: 16,
-        marginTop: 12,
-        marginBottom: 12,
+        marginTop: 14,
+        marginBottom: 14,
         justifyContent: "space-between",
         alignItems: "center",
       }}
     >
-      <div
-        style={{
-          fontSize: 20,
-          fontWeight: "bold",
-        }}
-      >
-        Annotate
-        <div style={{ fontSize: 12, color: "gray" }}>
-          A note taking app for everyone
+      <div>
+        <div
+          style={{
+            fontSize: 30,
+            fontWeight: "900",
+          }}
+        >
+          Annotate
         </div>
+        <motion.div
+          style={{ fontSize: 14, color: "gray", fontWeight: "300" }}
+          whileHover={{ color: Colors[theme].primary }}
+        >
+          A note taking app for everyone
+        </motion.div>
       </div>
       <img
         style={{
-          height: 60,
-          width: 60,
+          height: 68,
+          width: 68,
         }}
         src={Logo}
         alt="Annotate"
-        height={60}
-        width={60}
+        height={68}
+        width={68}
       />
     </div>
   );

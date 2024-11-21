@@ -8,11 +8,25 @@ import {
 import { Colors } from "@/src/constants/Colors";
 import { getTheme, useTheme } from "@/components/theme-provider";
 import { NotebookPenIcon, Trash2Icon } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 export const PinnedNotes = () => {
   const [popupOpened, setPopupOpened] = useState(false);
   const theme = getTheme();
+
+  useEffect(() => {
+    document.addEventListener("keydown", shortcuts);
+    return () => {
+      document.removeEventListener("keydown", shortcuts);
+    };
+  }, []);
+
+  const shortcuts = (e: KeyboardEvent) => {
+    if (e.key === "p" && e.ctrlKey) {
+      setPopupOpened((e) => !e);
+    }
+  };
+
   return (
     <Popover open={popupOpened}>
       <PopoverTrigger onClick={() => setPopupOpened((e) => !e)}>

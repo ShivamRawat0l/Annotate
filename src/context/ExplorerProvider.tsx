@@ -1,8 +1,9 @@
-import { createContext, useContext, useEffect, useState } from "react";
+import { createContext, useContext, useEffect, useMemo, useState } from "react";
 import { updateNote } from "../appwrite/database";
 import { useFolder } from "./FolderProvider";
 import { useAuth } from "./AuthenticationProvider";
 import { throttle } from "../utils/throttle";
+
 type ExplorerContextType = {
   folderEditing: string;
   setFolderEditing: (folderPath: string) => void;
@@ -35,17 +36,21 @@ export const ExplorerProvider = ({
       setIsSyncing(false);
     });
   };
+
   const syncNotesOnline = throttle(throttleSync, 5000);
 
+  const contextValue = useMemo(
+    () => ({
+      folderEditing,
+      setFolderEditing,
+      isSyncing,
+      syncNotesOnline,
+    }),
+    [folderEditing, isSyncing]
+  );
+
   return (
-    <ExplorerContext.Provider
-      value={{
-        folderEditing,
-        setFolderEditing,
-        isSyncing,
-        syncNotesOnline,
-      }}
-    >
+    <ExplorerContext.Provider value={contextValue}>
       {children}
     </ExplorerContext.Provider>
   );

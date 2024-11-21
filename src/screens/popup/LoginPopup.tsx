@@ -23,20 +23,20 @@ export const LoginPopup = memo(() => {
     } else {
       popupTimeout = setTimeout(() => {
         setIsOpen(true);
-      }, 4000);
+      }, 10000);
     }
     return () => clearTimeout(popupTimeout);
   }, [user]);
 
   return (
-    <Dialog open={open} defaultOpen={false} modal={true}>
+    <Dialog open={open} defaultOpen={false} modal>
       <DialogContent>
         <DialogHeader>
           <DialogTitle style={{ paddingBottom: 10 }}>
-            <div style={{ fontSize: 40 }}>Hello there!</div>
+            <div style={{ fontSize: 40 }}>Login to Annotate ?</div>
           </DialogTitle>
           <DialogDescription style={{ paddingTop: 15, paddingBottom: 20 }}>
-            <span style={{ fontSize: 16 }}>
+            <span style={{ fontSize: 16, fontWeight: "bold" }}>
               Without login all the changes will be stored in the browser and
               can be lost while doing the google login.
               <br />
@@ -44,8 +44,6 @@ export const LoginPopup = memo(() => {
               • Sync your notes with Google account.
               <br />
               • Access your notes from any device.
-              <br />
-              • Access annote notes here. ( WIP )
               <br />
             </span>
           </DialogDescription>
@@ -55,9 +53,10 @@ export const LoginPopup = memo(() => {
             display: "flex",
             flexDirection: "column",
             gap: 10,
+            paddingTop: 20,
           }}
         >
-          <GoogleButton onClick={() => googleLogin()} />
+          <GoogleButton onClick={googleLogin} />
           <div
             className="dismiss"
             onClick={() => {

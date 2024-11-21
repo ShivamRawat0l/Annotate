@@ -1,9 +1,11 @@
 import "./GoogleButton.css";
+import { memo } from "react";
+
 type GoogleButtonType = {
   onClick: () => void;
 };
 
-export const GoogleButton = ({ onClick }: GoogleButtonType) => {
+export const GoogleButton = memo(({ onClick }: GoogleButtonType) => {
   return (
     <button
       type="button"
@@ -18,4 +20,4 @@ export const GoogleButton = ({ onClick }: GoogleButtonType) => {
       Sign in with Google
     </button>
   );
-};
+});

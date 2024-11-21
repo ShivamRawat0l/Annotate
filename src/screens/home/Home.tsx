@@ -16,11 +16,13 @@ import { Input } from "@/components/ui/input";
 import { globalStyles } from "@/src/constants/Styles";
 import { Search } from "../search/Search";
 import { PinnedNotes } from "./components/PinnedNotes";
-import { Slash } from "lucide-react";
+import { SidebarClose, SidebarIcon, Slash } from "lucide-react";
 import React from "react";
+import { useLayout } from "@/src/context/LayoutProvider";
 
 const Home = ({ sidebarWidth }: { sidebarWidth: MotionValue<number> }) => {
   const { selectedFolderPath, folderDetails } = useFolder();
+  const { sidebarOpen, setSidebarOpen } = useLayout();
   const theme = getTheme();
 
   return (
@@ -42,6 +44,19 @@ const Home = ({ sidebarWidth }: { sidebarWidth: MotionValue<number> }) => {
           paddingRight: 40,
         }}
       >
+        {sidebarOpen ? (
+          <SidebarClose
+            onClick={() => {
+              setSidebarOpen(false);
+            }}
+          />
+        ) : (
+          <SidebarIcon
+            onClick={() => {
+              setSidebarOpen(true);
+            }}
+          />
+        )}
         <Breadcrumb>
           <BreadcrumbList>
             {selectedFolderPath.map((folderId) => (
@@ -49,7 +64,7 @@ const Home = ({ sidebarWidth }: { sidebarWidth: MotionValue<number> }) => {
                 <BreadcrumbSeparator />
                 <BreadcrumbItem>
                   <BreadcrumbLink>
-                    {folderDetails[folderId].title ?? ""}
+                    {folderDetails[folderId]?.title ?? ""}
                   </BreadcrumbLink>
                 </BreadcrumbItem>
               </React.Fragment>

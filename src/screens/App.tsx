@@ -1,5 +1,5 @@
 import Home from "./home/Home";
-import { ThemeProvider } from "@/components/theme-provider";
+import { getTheme, ThemeProvider } from "@/components/theme-provider";
 import { FolderProvider } from "../context/FolderProvider";
 import { AuthenticationProvider } from "../context/AuthenticationProvider";
 import { motion, useMotionValue, useTransform } from "framer-motion";
@@ -12,9 +12,27 @@ import { useEffect } from "react";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { Loading } from "./home/components/Loading";
 import "@/src/utils/prototype";
-const App = () => {
-  const { sidebarOpen } = useLayout();
+import { Colors } from "../constants/Colors";
 
+const App = () => {
+  return (
+    <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
+      <TooltipProvider>
+        <LayoutProvider>
+          <FolderProvider>
+            <AuthenticationProvider>
+              <ProviderWrapper />
+            </AuthenticationProvider>
+          </FolderProvider>
+        </LayoutProvider>
+      </TooltipProvider>
+    </ThemeProvider>
+  );
+};
+
+const ProviderWrapper = () => {
+  const { sidebarOpen } = useLayout();
+  const theme = getTheme();
   const motionValue = useMotionValue(DEFAULT_SIDEBAR_WIDTH);
   const remainingWidth = useTransform(
     motionValue,
@@ -22,53 +40,42 @@ const App = () => {
   );
 
   useEffect(() => {
-    window.addEventListener("resize", function () {
-      "use strict";
-      window.location.reload();
-    });
-    return () => {
-      window.removeEventListener("resize", function () {
-        "use strict";
-        window.location.reload();
-      });
-    };
-  }, []);
+    if (sidebarOpen) {
+      motionValue.set(DEFAULT_SIDEBAR_WIDTH);
+    } else {
+      motionValue.set(0);
+    }
+  }, [sidebarOpen]);
 
   return (
-    <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
-      <TooltipProvider>
-        <LayoutProvider>
-          <FolderProvider>
-            <AuthenticationProvider>
-              <Loading />
-              <div style={{ display: "flex" }}>
-                <LoginPopup />
-                <motion.div style={{ width: motionValue }}>
-                  <ExplorerProvider>
-                    <Explorer />
-                  </ExplorerProvider>
-                </motion.div>
-                {sidebarOpen && (
-                  <motion.div
-                    className="app-sidebar-resizer"
-                    style={{
-                      width: 4,
-                      backgroundColor: "black",
-                      height: "100vh",
-                    }}
-                    whileHover={{ scaleX: 2, backgroundColor: "skyblue" }}
-                    onPan={(e, info) => {
-                      motionValue.set(info.point.x);
-                    }}
-                  />
-                )}
-                <Home sidebarWidth={remainingWidth} />
-              </div>
-            </AuthenticationProvider>
-          </FolderProvider>
-        </LayoutProvider>
-      </TooltipProvider>
-    </ThemeProvider>
+    <>
+      <Loading />
+      <div style={{ display: "flex", height: "100vh" }}>
+        {sidebarOpen && (
+          <>
+            <LoginPopup />
+            <motion.div style={{ width: motionValue }}>
+              <ExplorerProvider>
+                <Explorer />
+              </ExplorerProvider>
+            </motion.div>
+            <motion.div
+              className="app-sidebar-resizer"
+              style={{
+                width: 4,
+                backgroundColor: "black",
+                height: "100vh",
+              }}
+              whileHover={{ scaleX: 2, backgroundColor: Colors[theme].primary }}
+              onPan={(e, info) => {
+                motionValue.set(info.point.x);
+              }}
+            />
+          </>
+        )}
+        <Home sidebarWidth={remainingWidth} />
+      </div>
+    </>
   );
 };
 

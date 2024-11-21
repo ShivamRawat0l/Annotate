@@ -1,3 +1,4 @@
+import { globalStyles } from "@/src/constants/Styles";
 import { useExplorer } from "@/src/context/ExplorerProvider";
 import { useFolder } from "@/src/context/FolderProvider";
 import { ElementType } from "@/src/types/notes.type";
@@ -25,6 +26,26 @@ export const NoteBar = ({ noteId, padding, parentId }: NoteBarProps) => {
     }
   };
 
+  const onDoubleClick = (e: any) => {
+    setFolderEditing(noteId);
+    document.addEventListener("click", handleClick);
+    setTimeout(() => {
+      const range = document.createRange();
+      range.selectNodeContents(e.target as HTMLElement);
+      const selection = window.getSelection();
+      selection?.removeAllRanges();
+      selection?.addRange(range);
+    }, 0);
+  };
+
+  const onKeyDown = (e: any) => {
+    if (e.key === "Enter") {
+      setFolderEditing("");
+      noteDetails.title = (e.target as HTMLDivElement).innerText;
+      document.removeEventListener("click", handleClick);
+    }
+  };
+
   const render = () => {
     return (
       <motion.div
@@ -33,10 +54,8 @@ export const NoteBar = ({ noteId, padding, parentId }: NoteBarProps) => {
         transition={{ duration: 0.2 }}
         draggable
         style={{
-          flex: 1,
-          display: "flex",
+          ...globalStyles.flexRow,
           alignItems: "center",
-          flexDirection: "row",
           paddingTop: 8,
           paddingLeft: padding + 20 + 6,
           paddingBottom: 8,
@@ -63,26 +82,10 @@ export const NoteBar = ({ noteId, padding, parentId }: NoteBarProps) => {
         <div
           ref={ref}
           contentEditable={folderEditing === noteId}
-          onDoubleClick={(e) => {
-            setFolderEditing(noteId);
-            document.addEventListener("click", handleClick);
-            setTimeout(() => {
-              const range = document.createRange();
-              range.selectNodeContents(e.target as HTMLElement);
-              const selection = window.getSelection();
-              selection?.removeAllRanges();
-              selection?.addRange(range);
-            }, 0);
-          }}
-          onKeyDown={(e) => {
-            if (e.key === "Enter") {
-              setFolderEditing("");
-              noteDetails.title = (e.target as HTMLDivElement).innerText;
-              document.removeEventListener("click", handleClick);
-            }
-          }}
+          onDoubleClick={onDoubleClick}
+          onKeyDown={onKeyDown}
           style={{
-            outline: "none",
+            ...styles.noteBar,
             borderBottom: folderEditing === noteId ? "1px solid gray" : " ",
           }}
         >
@@ -95,4 +98,10 @@ export const NoteBar = ({ noteId, padding, parentId }: NoteBarProps) => {
   return (
     <>{noteDetails && noteDetails.type === ElementType.NOTE && render()}</>
   );
+};
+
+const styles = {
+  noteBar: {
+    outline: "none",
+  },
 };

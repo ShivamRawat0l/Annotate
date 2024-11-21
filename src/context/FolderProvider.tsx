@@ -1,4 +1,11 @@
-import { createContext, useContext, useEffect, useRef, useState } from "react";
+import {
+  createContext,
+  useContext,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import {
   ElementType,
   type FolderData,
@@ -99,8 +106,6 @@ const FolderProvider = ({ children }: { children: React.ReactNode }) => {
   };
 
   const toggleFolderExpand = (folderId: string, status?: boolean) => {
-    console.log("console.log", folderDetails, "Folder details ");
-
     const item = folderDetails[folderId];
     if (item.type === ElementType.FOLDER) {
       item.isExpanded = status ?? !item.isExpanded;
@@ -176,28 +181,31 @@ const FolderProvider = ({ children }: { children: React.ReactNode }) => {
     setFolderStructure({ ...folderStructure });
   };
 
+  const contextValue = useMemo(
+    () => ({
+      folderStructure,
+      setFolderStructure,
+      resetData,
+      createNewFolder,
+      createNewNote,
+      deleteFolder,
+      selectedFolderPath,
+      setSelectedFolderPath,
+      toggleFolderExpand,
+      renameFolder,
+      collapseSubFolders,
+      isLoading,
+      folderDetails,
+      setFolderDetails,
+      userEmail,
+      setUserEmail,
+      moveFolder,
+    }),
+    [folderStructure, folderDetails, isLoading, selectedFolderPath, userEmail]
+  );
+
   return (
-    <FolderContext.Provider
-      value={{
-        folderStructure,
-        setFolderStructure,
-        resetData,
-        createNewFolder,
-        createNewNote,
-        deleteFolder,
-        selectedFolderPath,
-        setSelectedFolderPath,
-        toggleFolderExpand,
-        renameFolder,
-        collapseSubFolders,
-        isLoading,
-        folderDetails,
-        setFolderDetails,
-        userEmail,
-        setUserEmail,
-        moveFolder,
-      }}
-    >
+    <FolderContext.Provider value={contextValue}>
       {children}
     </FolderContext.Provider>
   );

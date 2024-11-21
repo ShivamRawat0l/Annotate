@@ -1,6 +1,5 @@
-import { uuidv7 } from "uuidv7";
 import { useFolder } from "../../context/FolderProvider";
-import { Plus, PlusSquare } from "lucide-react";
+import { PlusSquare } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Colors } from "../../constants/Colors";
 import { getTheme, useTheme } from "@/components/theme-provider";
@@ -12,6 +11,7 @@ import { useExplorer } from "@/src/context/ExplorerProvider";
 import { Separator } from "@/components/ui/separator";
 import "../css/Scrollbar.css";
 import { useAuth } from "@/src/context/AuthenticationProvider";
+
 export const Explorer = () => {
   const {
     folderStructure,
@@ -22,7 +22,8 @@ export const Explorer = () => {
     deleteFolder,
   } = useFolder();
   const { user } = useAuth();
-  const { setFolderEditing, syncNotesOnline } = useExplorer();
+  const { folderEditing, setFolderEditing, syncNotesOnline } = useExplorer();
+
   const theme = getTheme();
 
   useEffect(() => {
@@ -33,11 +34,12 @@ export const Explorer = () => {
   }, [user, folderStructure]);
 
   useEffect(() => {
+    if (folderEditing) return;
     document.addEventListener("keydown", shortcuts);
     return () => {
       document.removeEventListener("keydown", shortcuts);
     };
-  }, [selectedFolderPath]);
+  }, [selectedFolderPath, folderEditing]);
 
   const shortcuts = (e: KeyboardEvent) => {
     if (e.repeat) return;
@@ -64,16 +66,8 @@ export const Explorer = () => {
     }
   };
 
-  return (
-    <div
-      style={{
-        ...globalStyles.flexColumn,
-        backgroundColor: Colors[theme].background,
-        height: "100vh",
-      }}
-    >
-      <ExploerHeader />
-      <Separator />
+  const renderNotesTitle = () => {
+    return (
       <div
         style={{
           ...globalStyles.flexRow,
@@ -89,6 +83,20 @@ export const Explorer = () => {
         </div>
         <PlusSquare size={16} onClick={() => createNewFolder([])} />
       </div>
+    );
+  };
+
+  return (
+    <div
+      style={{
+        ...globalStyles.flexColumn,
+        backgroundColor: Colors[theme].background,
+        height: "100vh",
+      }}
+    >
+      <ExploerHeader />
+      <Separator />
+      {renderNotesTitle()}
       <div
         style={{
           flex: 1,
