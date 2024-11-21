@@ -8,9 +8,7 @@ import { motion, MotionValue } from "framer-motion";
 import { ElementType, type NoteType } from "@/src/types/notes.type";
 import { NOTES_SUFFIX } from "@/src/constants/Constants";
 import { throttle } from "@/src/utils/throttle";
-import { debounce } from "@/src/utils/debounce";
-import { Toaster } from "@/components/ui/sonner";
-import { toast } from "sonner";
+import type { Theme } from "@excalidraw/excalidraw/types/element/types";
 
 type AnnoteProps = {
   sidebarWidth: MotionValue<number>;
@@ -25,7 +23,7 @@ const Annote = ({ sidebarWidth }: AnnoteProps) => {
 
   const initialAppState = {
     viewBackgroundColor: Colors[theme].background,
-    theme: "dark",
+    theme: "dark" as Theme,
     currentItemStrokeColor: "#eee",
   };
 

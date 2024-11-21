@@ -22,7 +22,7 @@ export const Explorer = () => {
     deleteFolder,
   } = useFolder();
   const { user } = useAuth();
-  const { folderEditing, setFolderEditing, syncNotesOnline } = useExplorer();
+  const { setFolderEditing, syncNotesOnline } = useExplorer();
   const theme = getTheme();
 
   useEffect(() => {
