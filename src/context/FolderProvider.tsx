@@ -9,7 +9,7 @@ import {
 } from "../types/notes.type";
 import { toast } from "sonner";
 import { uuidv7 } from "uuidv7";
-import { DATA_STORAGE_KEY } from "../constants/Constants";
+import { DATA_STORAGE_KEY, GUEST_USER_ID } from "../constants/Constants";
 import { getChainedObject } from "../utils/array";
 import { getDBData } from "../appwrite/database";
 import { useAuth } from "./AuthenticationProvider";
@@ -41,7 +41,7 @@ const FolderProvider = ({ children }: { children: React.ReactNode }) => {
   const [folderDetails, setFolderDetails] = useState<FolderData>({});
   const [isLoading, setIsLoading] = useState(false);
   const [selectedFolderPath, setSelectedFolderPath] = useState<string[]>([]);
-  const [userEmail, setUserEmail] = useState<string>("__tempuser@temp.com__");
+  const [userEmail, setUserEmail] = useState<string>(GUEST_USER_ID);
 
   useEffect(() => {
     loadConfig();
