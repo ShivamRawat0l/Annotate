@@ -118,7 +118,7 @@ out
 # Nuxt.js build / generate output
 
 .nuxt
-dist
+dist/index.js
 
 # Gatsby files
 
@@ -174,3 +174,6 @@ dist
 # Finder (MacOS) folder config
 .DS_Store
 .vercel
+
+# Million Lint
+.million

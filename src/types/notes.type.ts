@@ -1,29 +1,41 @@
 import type { ExcalidrawElement } from "@excalidraw/excalidraw/types/element/types";
 
-type NoteType = {
+export enum ElementType {
+  NOTE = "NOTE",
+  FOLDER = "FOLDER",
+}
+
+type CommonType = {
   id: string;
+  createdAt: Date;
+  updatedAt: Date;
+  title: string;
+};
+
+export type NoteType = CommonType & {
+  type: ElementType.NOTE;
   excalidrawData: ExcalidrawElement[];
-  title: string;
-  createdAt: Date;
-  updatedAt: Date;
 };
 
-type FolderType = {
-  // NOTE: NOte this in notes app [key: string] = folder name
-  id: string;
-  title: string;
-  createdAt: Date;
-  updatedAt: Date;
-  subFolders: FolderType[];
-  notes: NoteType[];
+export type FolderType = CommonType & {
+  type: ElementType.FOLDER;
   isExpanded: boolean;
+  count: number;
 };
 
-type Data = FolderType[];
+export type FolderStructure = {
+  [key: string]: FolderStructure;
+};
 
-type UserType = {
+export type FolderPath = string[];
+
+export type FolderData = {
+  [key: string]: FolderType | NoteType;
+};
+
+export type UserType = {
   id: string;
   email: string;
+  name: string;
+  photoUrl: string;
 };
-
-export type { NoteType, FolderType, Data, UserType };

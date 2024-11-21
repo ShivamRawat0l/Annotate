@@ -1,14 +1,25 @@
-- Address bar for the note
-- For github gist integration we need to add github login. 
-- Explorer
-- Keyboard shortcuts to fast access the notes 
-- Save focus featuer to the excalidraw
-- Font not working in the shadcn
-- Collpase not working in the explorer
+- FEATURES
+    - Address bar for the note @done
+
+    - EXPLORER
+        - Keyboard shortcuts to fast access the notes 
+        - Collapse and expand the folders @done
+        - Collapse all the folders @done
+    - Save focus featuer to the excalidraw
+    - Font not working in the shadcn @done
+    - COLLAPSE NOT WORKING IN THE EXPLORER - @done
 - 
 - 
 - 
-- For google login you will need to then link 
+- For google login you will need to then link @done
 - 
 - Search 
 - Library 
+
+- BUG 
+    - When opening the inspect elemenet the size is same [Fixed by reloading website when resized] @done
+    - Localstorage can contain data for another user. So will need to store a key in localstorage to tell whose data it is.
+
+
+- Shelved
+    - For github gist integration we need to add github login.  [Bad feature design for normal users]

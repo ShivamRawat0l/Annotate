@@ -1,102 +1,109 @@
 import { Excalidraw, WelcomeScreen } from "@excalidraw/excalidraw";
-import type { NoteType } from "../../types/notes.type";
-import type { Data } from "../../types/notes.type";
 import { useFolder } from "@/src/context/FolderProvider";
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, useMemo, useCallback } from "react";
 import type { ExcalidrawImperativeAPI } from "@excalidraw/excalidraw/types/types";
 import { getTheme } from "@/components/theme-provider";
 import { Colors } from "@/src/constants/Colors";
-import { useLayout } from "@/src/context/LayoutProvider";
-import { SCREEN_WIDTH } from "@/src/constants/Constants";
 import { motion, MotionValue } from "framer-motion";
+import { ElementType, type NoteType } from "@/src/types/notes.type";
+import { NOTES_SUFFIX } from "@/src/constants/Constants";
+import { throttle } from "@/src/utils/throttle";
+import type { Theme } from "@excalidraw/excalidraw/types/element/types";
 
-type Props = {};
+type AnnoteProps = {
+  sidebarWidth: MotionValue<number>;
+};
 
-const Annote = ({ sidebarWidth }: { sidebarWidth: MotionValue<number> }) => {
-  const { data, setData, selectedNote } = useFolder();
-  const currentNote = useRef<string | undefined>(undefined);
+const Annote = ({ sidebarWidth }: AnnoteProps) => {
+  const { selectedFolderPath, folderDetails, setFolderDetails } = useFolder();
   const theme = getTheme();
+  const [currentNoteId, setCurrentNoteId] = useState<string | undefined>(
+    undefined
+  );
+
+  const initialAppState = {
+    viewBackgroundColor: Colors[theme].background,
+    theme: "dark" as Theme,
+    currentItemStrokeColor: "#eee",
+  };
+
   const [excalidrawAPI, setExcalidrawAPI] =
     useState<ExcalidrawImperativeAPI | null>(null);
 
-  const handleFileDownload = () => {
-    const element = document.createElement("a");
-    const file = new Blob([JSON.stringify(data)], {
-      type: "application/json",
-    });
-    element.href = URL.createObjectURL(file);
-    element.download = "myFile.json";
-    document.body.appendChild(element);
-    element.click();
-  };
+  const selectedNote: NoteType | undefined = useMemo(() => {
+    let selectedNoteId = selectedFolderPath.last;
+    if (
+      selectedFolderPath &&
+      selectedNoteId &&
+      selectedNoteId.endsWith(NOTES_SUFFIX) &&
+      folderDetails[selectedNoteId].type === ElementType.NOTE
+    ) {
+      return folderDetails[selectedNoteId] as NoteType;
+    }
+    return undefined;
+  }, [selectedFolderPath]);
 
   useEffect(() => {
+    console.log(selectedNote);
     if (excalidrawAPI) {
       excalidrawAPI.updateScene({
         elements: selectedNote?.excalidrawData,
+        appState: initialAppState,
       });
-      currentNote.current = selectedNote?.id;
+      setCurrentNoteId(selectedNote?.id);
     }
   }, [selectedNote]);
 
+  const throttleSave = useMemo(
+    () =>
+      throttle(() => {
+        setFolderDetails({ ...folderDetails });
+      }, 3000),
+    []
+  );
+
+  if (!selectedNote) return <></>;
+
   return (
     <div>
-      {selectedNote && (
-        <motion.div
-          style={{
-            height: "88vh",
-            width: sidebarWidth,
+      <motion.div
+        style={{
+          height: "96vh",
+          width: sidebarWidth,
+        }}
+      >
+        <Excalidraw
+          UIOptions={{
+            canvasActions: {
+              changeViewBackgroundColor: false,
+              toggleTheme: false,
+              clearCanvas: false,
+            },
+            tools: {
+              image: false,
+            },
+          }}
+          excalidrawAPI={(api) => setExcalidrawAPI(api)}
+          renderTopRightUI={() => <div></div>}
+          initialData={{
+            elements: selectedNote.excalidrawData,
+            appState: initialAppState,
+          }}
+          onChange={(excalidrawData) => {
+            if (selectedNote?.id === currentNoteId) {
+              selectedNote.excalidrawData = [...excalidrawData];
+              throttleSave();
+            }
           }}
         >
-          <Excalidraw
-            UIOptions={{
-              canvasActions: {
-                changeViewBackgroundColor: false,
-                toggleTheme: false,
-              },
-            }}
-            excalidrawAPI={(api) => setExcalidrawAPI(api)}
-            renderTopRightUI={() => (
-              <div>
-                <button
-                  onClick={() =>
-                    navigator.clipboard.writeText(JSON.stringify(data))
-                  }
-                >
-                  Copy
-                </button>
-                <button
-                  onClick={() => {
-                    handleFileDownload();
-                  }}
-                >
-                  Export Temp
-                </button>
-                <button onClick={() => setData(data)}>Save</button>
-              </div>
-            )}
-            initialData={{
-              elements: selectedNote.excalidrawData,
-              appState: {
-                viewBackgroundColor: Colors[theme].background,
-                theme: "dark",
-              },
-            }}
-            onChange={(excalidrawData) => {
-              if (currentNote.current === selectedNote.id) {
-                selectedNote.excalidrawData = [...excalidrawData];
-              }
-            }}
-          >
-            <WelcomeScreen>
-              <WelcomeScreen.Hints.ToolbarHint>
-                <p> ToolBar Hints </p>
-              </WelcomeScreen.Hints.ToolbarHint>
-              <WelcomeScreen.Hints.HelpHint />
-            </WelcomeScreen>
-          </Excalidraw>
-        </motion.div>
-      )}
+          <WelcomeScreen>
+            <WelcomeScreen.Hints.ToolbarHint>
+              <p> ToolBar </p>
+            </WelcomeScreen.Hints.ToolbarHint>
+            <WelcomeScreen.Hints.HelpHint />
+          </WelcomeScreen>
+        </Excalidraw>
+      </motion.div>
     </div>
   );
 };
