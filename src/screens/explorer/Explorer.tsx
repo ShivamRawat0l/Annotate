@@ -19,6 +19,7 @@ export const Explorer = () => {
     createNewFolder,
     createNewNote,
     toggleFolderExpand,
+    deleteFolder,
   } = useFolder();
   const { user } = useAuth();
   const { folderEditing, setFolderEditing, syncNotesOnline } = useExplorer();
@@ -53,7 +54,7 @@ export const Explorer = () => {
       toggleFolderExpand(selectedFolderPath.last);
     }
     if (e.key.toLowerCase() === "d" && e.shiftKey && selectedFolderPath) {
-      // deleteFolder(selectedFolderPath);
+      deleteFolder(selectedFolderPath);
     }
   };
 

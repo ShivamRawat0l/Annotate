@@ -31,6 +31,7 @@ type FolderContextType = {
   setFolderDetails: React.Dispatch<React.SetStateAction<FolderData>>;
   userEmail: string;
   setUserEmail: React.Dispatch<React.SetStateAction<string>>;
+  moveFolder: (folderPath: string[], newParentPath: string[]) => void;
 };
 
 const FolderContext = createContext<FolderContextType | undefined>(undefined);
@@ -98,9 +99,11 @@ const FolderProvider = ({ children }: { children: React.ReactNode }) => {
   };
 
   const toggleFolderExpand = (folderId: string, status?: boolean) => {
+    console.log("console.log", folderDetails, "Folder details ");
+
     const item = folderDetails[folderId];
     if (item.type === ElementType.FOLDER) {
-      item.isExpanded = !item.isExpanded;
+      item.isExpanded = status ?? !item.isExpanded;
       setFolderDetails({ ...folderDetails });
     }
   };
@@ -117,7 +120,6 @@ const FolderProvider = ({ children }: { children: React.ReactNode }) => {
     };
     folderDetails[newFolder.id] = newFolder;
     const item = folderDetails[folderPath.last];
-    console.log(item, folderPath.last, folderPath, folderDetails);
     if (item && item.type === ElementType.FOLDER) {
       item.isExpanded = true;
       item.count += 1;
@@ -147,17 +149,31 @@ const FolderProvider = ({ children }: { children: React.ReactNode }) => {
   };
 
   const deleteFolder = (folderPath: string[]) => {
-    const folder = getChainedObject(folderStructure, folderPath.slice(0, -1));
-    delete folder[folderPath[folderPath.length - 1]];
-    delete folderDetails[folderPath[folderPath.length - 1]];
+    const folder = getChainedObject(folderStructure, folderPath, -1);
+    delete folder[folderPath.last];
+    delete folderDetails[folderPath.last];
+    setSelectedFolderPath([]);
     setFolderStructure({ ...folderStructure });
-    setFolderDetails({ ...folderDetails });
     toast(`Folder has been deleted.`);
   };
 
   const renameFolder = (folderId: string, newTitle: string) => {
     folderDetails[folderId].title = newTitle;
     setFolderDetails({ ...folderDetails });
+  };
+
+  const moveFolder = (folderPath: string[], newParentPath: string[]) => {
+    if (folderPath.last === newParentPath.last) return;
+    if (
+      folderPath.length > 1 &&
+      folderPath.slice(0, -1).last === newParentPath.last
+    )
+      return;
+    const folder = getChainedObject(folderStructure, folderPath, -1);
+    const newParentFolder = getChainedObject(folderStructure, newParentPath);
+    newParentFolder[folderPath.last] = folder[folderPath.last];
+    delete folder[folderPath.last];
+    setFolderStructure({ ...folderStructure });
   };
 
   return (
@@ -179,6 +195,7 @@ const FolderProvider = ({ children }: { children: React.ReactNode }) => {
         setFolderDetails,
         userEmail,
         setUserEmail,
+        moveFolder,
       }}
     >
       {children}

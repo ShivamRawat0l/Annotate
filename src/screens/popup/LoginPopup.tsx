@@ -7,10 +7,10 @@ import {
 } from "@/components/ui/dialog";
 import "./LoginPopup.css";
 import { useAuth } from "@/src/context/AuthenticationProvider";
-import { useEffect, useState } from "react";
+import { useEffect, useState, memo } from "react";
 import { GoogleButton } from "../components/GoogleButton";
 
-export const LoginPopup = () => {
+export const LoginPopup = memo(() => {
   const { user } = useAuth();
   const [open, setIsOpen] = useState(false);
   const { googleLogin } = useAuth();
@@ -74,4 +74,4 @@ export const LoginPopup = () => {
       </DialogContent>
     </Dialog>
   );
-};
+});

@@ -1,5 +1,6 @@
 import lightningcss from "bun-lightningcss";
-
+import MillionLint from "@million/lint";
+import react from "@vitejs/plugin-react";
 try {
   await Bun.build({
     entrypoints: ["./index.tsx"],

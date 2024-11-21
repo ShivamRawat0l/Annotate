@@ -22,6 +22,13 @@ const Annote = ({ sidebarWidth }: AnnoteProps) => {
   const [currentNoteId, setCurrentNoteId] = useState<string | undefined>(
     undefined
   );
+
+  const initialAppState = {
+    viewBackgroundColor: Colors[theme].background,
+    theme: "dark",
+    currentItemStrokeColor: "#eee",
+  };
+
   const [excalidrawAPI, setExcalidrawAPI] =
     useState<ExcalidrawImperativeAPI | null>(null);
 
@@ -39,10 +46,11 @@ const Annote = ({ sidebarWidth }: AnnoteProps) => {
   }, [selectedFolderPath]);
 
   useEffect(() => {
-    console.log("currentNoteId", currentNoteId, selectedNote?.id);
+    console.log(selectedNote);
     if (excalidrawAPI) {
       excalidrawAPI.updateScene({
         elements: selectedNote?.excalidrawData,
+        appState: initialAppState,
       });
       setCurrentNoteId(selectedNote?.id);
     }
@@ -51,15 +59,13 @@ const Annote = ({ sidebarWidth }: AnnoteProps) => {
   const throttleSave = useMemo(
     () =>
       throttle(() => {
-        console.log("throttle save");
         setFolderDetails({ ...folderDetails });
       }, 3000),
     []
   );
 
-  if (!selectedNote) {
-    return null;
-  }
+  if (!selectedNote) return <></>;
+
   return (
     <div>
       <motion.div
@@ -73,21 +79,23 @@ const Annote = ({ sidebarWidth }: AnnoteProps) => {
             canvasActions: {
               changeViewBackgroundColor: false,
               toggleTheme: false,
+              clearCanvas: false,
+            },
+            tools: {
+              image: false,
             },
           }}
           excalidrawAPI={(api) => setExcalidrawAPI(api)}
           renderTopRightUI={() => <div></div>}
           initialData={{
             elements: selectedNote.excalidrawData,
-            appState: {
-              viewBackgroundColor: Colors[theme].background,
-              theme: "dark",
-              currentItemStrokeColor: "#eee",
-            },
+            appState: initialAppState,
           }}
           onChange={(excalidrawData) => {
-            selectedNote.excalidrawData = [...excalidrawData];
-            throttleSave();
+            if (selectedNote?.id === currentNoteId) {
+              selectedNote.excalidrawData = [...excalidrawData];
+              throttleSave();
+            }
           }}
         >
           <WelcomeScreen>

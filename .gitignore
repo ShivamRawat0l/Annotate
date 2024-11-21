@@ -174,3 +174,6 @@ dist/index.js
 # Finder (MacOS) folder config
 .DS_Store
 .vercel
+
+# Million Lint
+.million

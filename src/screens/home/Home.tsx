@@ -36,28 +36,26 @@ const Home = ({ sidebarWidth }: { sidebarWidth: MotionValue<number> }) => {
           height: "4vh",
           ...globalStyles.flexRow,
           justifyContent: "space-between",
-          alignItems: "flex-start",
+          alignItems: "center",
           width: sidebarWidth,
           paddingLeft: 40,
           paddingRight: 40,
         }}
       >
-        <div>
-          <Breadcrumb>
-            <BreadcrumbList>
-              {selectedFolderPath.map((folderId) => (
-                <React.Fragment key={folderId}>
-                  <BreadcrumbSeparator />
-                  <BreadcrumbItem>
-                    <BreadcrumbLink>
-                      {folderDetails[folderId].title}
-                    </BreadcrumbLink>
-                  </BreadcrumbItem>
-                </React.Fragment>
-              ))}
-            </BreadcrumbList>
-          </Breadcrumb>
-        </div>
+        <Breadcrumb>
+          <BreadcrumbList>
+            {selectedFolderPath.map((folderId) => (
+              <React.Fragment key={folderId}>
+                <BreadcrumbSeparator />
+                <BreadcrumbItem>
+                  <BreadcrumbLink>
+                    {folderDetails[folderId].title ?? ""}
+                  </BreadcrumbLink>
+                </BreadcrumbItem>
+              </React.Fragment>
+            ))}
+          </BreadcrumbList>
+        </Breadcrumb>
         {false && (
           <div
             style={{ ...globalStyles.flexRow, flex: 0, alignItems: "center" }}

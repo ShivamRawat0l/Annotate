@@ -19,6 +19,7 @@ export const ExplorerContextMenu = ({ children }: ExplorerContextMenuType) => {
     createNewFolder,
     createNewNote,
     toggleFolderExpand,
+    deleteFolder,
   } = useFolder();
   const { setFolderEditing } = useExplorer();
 
@@ -48,7 +49,7 @@ export const ExplorerContextMenu = ({ children }: ExplorerContextMenuType) => {
           if (selectedFolderPath) setFolderEditing(selectedFolderPath.last);
         })}
         {renderRightClickMenuOptions("Delete", "⇧D", () => {
-          // TODO: Implement
+          if (selectedFolderPath) deleteFolder(selectedFolderPath);
         })}
         {renderRightClickMenuOptions("Toggle Expand", "⇧T", () => {
           if (selectedFolderPath) toggleFolderExpand(selectedFolderPath.last);
