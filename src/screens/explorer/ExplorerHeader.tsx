@@ -1,51 +1,57 @@
 import Logo from "@/assets/icon.png";
 import { getTheme } from "@/components/theme-provider";
 import { Colors } from "@/src/constants/Colors";
-import { globalStyles } from "@/src/constants/Styles";
+import { globalStyles, type Style } from "@/src/constants/Styles";
 import { motion } from "framer-motion";
 
 export const ExploerHeader = () => {
-  const theme = getTheme();
-  return (
-    <div
-      style={{
-        ...globalStyles.flexRow,
-        flexShrink: 0,
-        flex: 0,
-        marginLeft: 16,
-        marginRight: 16,
-        marginTop: 14,
-        marginBottom: 14,
-        justifyContent: "space-between",
-        alignItems: "center",
-      }}
-    >
-      <div>
-        <div
-          style={{
-            fontSize: 30,
-            fontWeight: "900",
-          }}
-        >
-          Annotate
-        </div>
-        <motion.div
-          style={{ fontSize: 14, color: "gray", fontWeight: "300" }}
-          whileHover={{ color: Colors[theme].primary }}
-        >
-          A note taking app for everyone
-        </motion.div>
-      </div>
-      <img
-        style={{
-          height: 68,
-          width: 68,
-        }}
-        src={Logo}
-        alt="Annotate"
-        height={68}
-        width={68}
-      />
-    </div>
-  );
+	const theme = getTheme();
+	return (
+		<div
+			style={{
+				...styles.explorerHeader,
+				backgroundColor: Colors[theme].background,
+			}}
+		>
+			<div>
+				<div style={styles.annotate}>Annotate</div>
+				<motion.div
+					style={styles.annotateDescription}
+					whileHover={{ color: Colors[theme].primary }}
+				>
+					A note taking app for everyone
+				</motion.div>
+			</div>
+			<img style={styles.logo} src={Logo} alt="Annotate" />
+		</div>
+	);
 };
+
+const styles: Style = Object.freeze({
+	logo: {
+		height: 68,
+		width: 68,
+	},
+	annotate: {
+		fontSize: 30,
+		fontFamily: "Recursive",
+		fontWeight: "900",
+	},
+	annotateDescription: {
+		fontSize: 18,
+		color: "gray",
+		fontFamily: "Schoolbell",
+		fontWeight: "300",
+	},
+	explorerHeader: {
+		...globalStyles.flexRow,
+		flexShrink: 0,
+		flex: 0,
+		marginLeft: 30,
+		marginRight: 30,
+		marginTop: 22,
+		marginBottom: 22,
+		justifyContent: "space-between",
+		alignItems: "center",
+	},
+});
