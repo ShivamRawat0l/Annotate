@@ -6,7 +6,6 @@ import {
 	BreadcrumbPage,
 	BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
-import Annote from "./Annote";
 import { useFolder } from "@/src/context/FolderProvider";
 import { Colors } from "@/src/constants/Colors";
 import { getTheme } from "@/components/theme-provider";
@@ -16,13 +15,30 @@ import { Input } from "@/components/ui/input";
 import { globalStyles } from "@/src/constants/Styles";
 import { PinnedNotes } from "./components/PinnedNotes";
 import { SidebarClose, SidebarIcon, Slash } from "lucide-react";
-import React from "react";
+import React, { useMemo } from "react";
 import { useLayout } from "@/src/context/LayoutProvider";
+import { DrawAthene } from "./Canvas/DrawAthene";
+import { ElementType } from "@/src/types/notes.type";
+import type { NoteType } from "@/src/types/notes.type";
+import { NOTES_SUFFIX } from "@/src/constants/Constants";
 
 const Home = ({ sidebarWidth }: { sidebarWidth: MotionValue<number> }) => {
 	const { selectedFolderPath, folderDetails } = useFolder();
 	const { sidebarOpen, setSidebarOpen } = useLayout();
 	const theme = getTheme();
+
+	const selectedNote: NoteType | undefined = useMemo(() => {
+		let selectedNoteId = selectedFolderPath.last;
+		if (
+			selectedFolderPath &&
+			selectedNoteId &&
+			selectedNoteId.endsWith(NOTES_SUFFIX) &&
+			folderDetails[selectedNoteId].type === ElementType.NOTE
+		) {
+			return folderDetails[selectedNoteId] as NoteType;
+		}
+		return undefined;
+	}, [selectedFolderPath]);
 
 	return (
 		<motion.div
@@ -89,7 +105,7 @@ const Home = ({ sidebarWidth }: { sidebarWidth: MotionValue<number> }) => {
 				)}
 			</motion.div>
 			{selectedFolderPath.length > 0 ? (
-				<Annote sidebarWidth={sidebarWidth} />
+				<DrawAthene sidebarWidth={sidebarWidth} />
 			) : (
 				<></>
 			)}

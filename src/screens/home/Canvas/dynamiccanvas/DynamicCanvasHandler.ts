@@ -1,7 +1,8 @@
 import { classHighlighter, highlightCode } from "@lezer/highlight";
 import { uuidv7 } from "uuidv7";
-import { LezerMapper, NightOwl } from "./Highlight.NightOwl";
-import { FontSize } from "./Fonts";
+import { LezerMapper, NightOwl } from "../themes/Highlight.NightOwl";
+import { FontSize } from "../helper/Fonts";
+import { loadParser, Languages } from "../helper/Parser";
 
 type Line = {
 	id: string;
@@ -13,25 +14,6 @@ type Point = {
 	x: number;
 	y: number;
 };
-
-enum Languages {
-	cpp = "cpp",
-	css = "css",
-	go = "go",
-	html = "html",
-	java = "java",
-	javascript = "javascript",
-	json = "json",
-	markdown = "markdown",
-	php = "php",
-	python = "python",
-	rust = "rust",
-	sass = "sass",
-	xml = "xml",
-	yaml = "yaml",
-	closure = "closure",
-	plain = "plain",
-}
 
 enum TextType {
 	heading1 = "heading1",
@@ -54,66 +36,19 @@ export class Canvas {
 	private ctx: OffscreenCanvasRenderingContext2D;
 	private lines: Line[] = [];
 	private text: Text[] = [];
-	private lastDrawTime: number = 0;
 	private codeCache: { [key: string]: string } = {};
 
 	constructor(ctx: OffscreenCanvasRenderingContext2D) {
 		this.ctx = ctx;
 	}
 
-	draw = (time: number) => {
-		if (this.lastDrawTime == 0) {
-			this.lastDrawTime = time;
-		}
-		const timePassed = time - this.lastDrawTime;
-		if (timePassed < 13) return;
-		this.lastDrawTime = time;
+	draw = () => {
 		this.ctx.clearRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
 		this.drawLineComponents();
 		this.drawTextComponents();
-		this.lastDrawTime = time;
 	};
 
 	private parserCache: { [key: string]: any } = {};
-
-	loadParser = async (language: Languages) => {
-		switch (language) {
-			case Languages.cpp:
-				return (await import("@lezer/cpp")).parser;
-			case Languages.css:
-				return (await import("@lezer/css")).parser;
-			case Languages.go:
-				return (await import("@lezer/go")).parser;
-			case Languages.html:
-				return (await import("@lezer/html")).parser;
-			case Languages.java:
-				return (await import("@lezer/java")).parser;
-			case Languages.javascript:
-				return (await import("@lezer/javascript")).parser;
-			case Languages.json:
-				return (await import("@lezer/json")).parser;
-			case Languages.markdown:
-				return (await import("@lezer/markdown")).parser;
-			case Languages.php:
-				// @ts-ignore
-				return (await import("@lezer/php")).parser;
-			case Languages.python:
-				return (await import("@lezer/python")).parser;
-			case Languages.rust:
-				return (await import("@lezer/rust")).parser;
-			case Languages.sass:
-				return (await import("@lezer/sass")).parser;
-			case Languages.xml:
-				return (await import("@lezer/xml")).parser;
-			case Languages.yaml:
-				return (await import("@lezer/yaml")).parser;
-			case Languages.closure:
-				// @ts-ignore
-				return (await import("@nextjournal/lezer-clojure")).parser;
-			default:
-				throw new Error(`Unsupported language: ${language}`);
-		}
-	};
 
 	private drawLineComponents = () => {
 		for (let i = 0; i < this.lines.length; i++) {
@@ -163,7 +98,7 @@ export class Canvas {
 				result.push({ value: "\n", className: "" });
 			}
 			if (!this.parserCache[text.language]) {
-				this.parserCache[text.language] = await this.loadParser(
+				this.parserCache[text.language] = await loadParser(
 					text.language
 				);
 			}
@@ -255,6 +190,8 @@ export class Canvas {
 
 	endTextDraw = () => {
 		this.text[this.text.length - 1].isEditing = false;
+		this.draw();
+		return this.text.pop();
 	};
 
 	startLineDraw = (points: { x: number; y: number }) => {
@@ -282,5 +219,6 @@ export class Canvas {
 		let lastPoint = lastLine.points[lastLine.points.length - 1];
 		lastPoint.x = points.x;
 		lastPoint.y = points.y;
+		return this.lines.pop();
 	};
 }
