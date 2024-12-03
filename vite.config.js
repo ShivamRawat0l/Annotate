@@ -4,7 +4,7 @@ import react from "@vitejs/plugin-react";
 import { resolve } from "path";
 
 export default defineConfig({
-	plugins: [MillionLint.vite(), react()],
+	plugins: [react()],
 	root: ".",
 	resolve: {
 		alias: {

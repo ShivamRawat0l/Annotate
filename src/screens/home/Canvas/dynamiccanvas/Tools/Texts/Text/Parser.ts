@@ -1,23 +1,4 @@
-import { TextType, type Text } from "../dynamiccanvas/Events";
-
-export enum Languages {
-	cpp = "cpp",
-	css = "css",
-	go = "go",
-	html = "html",
-	java = "java",
-	javascript = "javascript",
-	json = "json",
-	markdown = "markdown",
-	php = "php",
-	python = "python",
-	rust = "rust",
-	sass = "sass",
-	xml = "xml",
-	yaml = "yaml",
-	closure = "closure",
-	plain = "plain",
-}
+import { Languages } from "./Text.type";
 
 let parserCache: { [key: string]: any } = {};
 
@@ -80,25 +61,4 @@ export const loadParser = async (language: Languages) => {
 		throw new Error(`Unsupported language: ${language}`);
 	}
 	return parserCache[language];
-};
-
-export const handleTextPrefix = (text: Text, i: number) => {
-	var newText = { value: "", type: TextType.paragraph };
-	if (text.value === "# ") {
-		text.value = "";
-		text.type = TextType.heading1;
-	} else if (text.value === "## ") {
-		text.value = "";
-		text.type = TextType.heading2;
-	} else if (text.value === "### ") {
-		text.value = "";
-		text.type = TextType.heading3;
-	} else if (text.value.startsWith("``` ") && text.value.endsWith(" ")) {
-		const lang = text.value.slice(4, -1);
-		if (Object.values(Languages).includes(lang as Languages)) {
-			text.value = "";
-			text.type = TextType.code;
-			text.language = lang as Languages;
-		}
-	}
 };

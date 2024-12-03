@@ -17,7 +17,7 @@ import { PinnedNotes } from "./components/PinnedNotes";
 import { SidebarClose, SidebarIcon, Slash } from "lucide-react";
 import React, { useMemo } from "react";
 import { useLayout } from "@/src/context/LayoutProvider";
-import { DrawAthene } from "./Canvas/DrawAthene";
+import { DrawAtom } from "./Canvas/DrawAtom";
 import { ElementType } from "@/src/types/notes.type";
 import type { NoteType } from "@/src/types/notes.type";
 import { NOTES_SUFFIX } from "@/src/constants/Constants";
@@ -105,7 +105,7 @@ const Home = ({ sidebarWidth }: { sidebarWidth: MotionValue<number> }) => {
 				)}
 			</motion.div>
 			{selectedFolderPath.length > 0 ? (
-				<DrawAthene sidebarWidth={sidebarWidth} />
+				<DrawAtom sidebarWidth={sidebarWidth} />
 			) : (
 				<></>
 			)}

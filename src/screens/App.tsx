@@ -4,16 +4,17 @@ import { FolderProvider } from "../context/FolderProvider";
 import { AuthenticationProvider } from "../context/AuthenticationProvider";
 import { motion, useMotionValue, useTransform } from "framer-motion";
 import { LayoutProvider, useLayout } from "../context/LayoutProvider";
-import { DEFAULT_SIDEBAR_WIDTH, SCREEN_WIDTH } from "../constants/Constants";
+import { DEFAULT_SIDEBAR_WIDTH } from "../constants/Constants";
 import { ExplorerProvider } from "../context/ExplorerProvider";
 import { Explorer } from "./explorer/Explorer";
 import { LoginPopup } from "./popup/LoginPopup";
-import { useEffect } from "react";
+import { useEffect, useMemo } from "react";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { Loading } from "./home/components/Loading";
 import "@/src/utils/prototype";
 import { Colors } from "../constants/Colors";
 import type { Style } from "../constants/Styles";
+import useScreen from "../hooks/useScreen";
 
 const App = () => {
 	return (
@@ -33,6 +34,7 @@ const App = () => {
 
 const ProviderWrapper = () => {
 	const { sidebarOpen } = useLayout();
+	const { SCREEN_WIDTH } = useScreen();
 	const theme = getTheme();
 	const motionValue = useMotionValue(DEFAULT_SIDEBAR_WIDTH);
 	const remainingWidth = useTransform(
