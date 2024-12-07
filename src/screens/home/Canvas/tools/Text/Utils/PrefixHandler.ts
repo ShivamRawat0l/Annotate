@@ -1,4 +1,4 @@
-import { TextType, Languages } from "./Text.type";
+import { TextType, Languages } from "../Text.type";
 
 export const validCharacters =
 	"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()_+-=`~{}[]:\";',./<>?\\| ";

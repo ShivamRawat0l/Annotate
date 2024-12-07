@@ -1,4 +1,5 @@
-import type { Point } from "../../../DynamicCanvasHandler";
+import type { ToolsID } from "../../../../tools/ToolsDetails";
+import type { Point } from "../../../Events.type";
 
 export enum TextType {
 	heading1 = "heading1",
@@ -15,6 +16,9 @@ export type Text = {
 	type: TextType;
 	isEditing: boolean;
 	language: Languages;
+	selected: boolean;
+	boundingBox: [Point, Point];
+	toolType: ToolsID.text;
 };
 
 export enum Languages {

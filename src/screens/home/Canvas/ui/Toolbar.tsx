@@ -1,23 +1,21 @@
-import { Wrench } from "lucide-react";
-
-import { GripVertical } from "lucide-react";
+import { Settings2, GripVertical } from "lucide-react";
 import { Colors } from "@/src/constants/Colors";
 import { getTheme } from "@/components/theme-provider";
-import { ToolDetails, type ToolsID } from "./ToolsDetails";
-import { useTools } from "./useTools";
-import { ToolsIcon } from "./ToolsIcon";
+import type { ToolDetailType } from "../tools/ToolManagerDynamic";
 
 type RenderToolsProps = {
-	onChangeToolSelected: (tool: ToolsID) => void;
-	toolSelected: ToolsID;
+	tools: ToolDetailType[];
+	toolSelected?: ToolDetailType;
+	onChangeToolSelected: (tool: ToolDetailType) => void;
 };
 
-export const RenderTools = ({
-	onChangeToolSelected,
+export const ToolBar = ({
+	tools,
 	toolSelected,
+	onChangeToolSelected,
 }: RenderToolsProps) => {
 	const theme = getTheme();
-	const { tools } = useTools();
+
 	return (
 		<div
 			style={{
@@ -29,23 +27,22 @@ export const RenderTools = ({
 			}}
 		>
 			{tools.map((tool) => {
-				const toolDetails = ToolDetails[tool];
 				return (
 					<div
-						key={toolDetails.name}
+						key={tool.name}
 						onClick={() => {
 							onChangeToolSelected(tool);
 						}}
 						style={{
 							background:
-								tool === toolSelected
+								tool.id === toolSelected?.id
 									? Colors[theme].primary
 									: "transparent",
 							padding: 10,
 							borderRadius: 5,
 						}}
 					>
-						{ToolsIcon[tool]}
+						{tool.icon}
 					</div>
 				);
 			})}
@@ -55,7 +52,7 @@ export const RenderTools = ({
 					borderRadius: 5,
 				}}
 			>
-				<Wrench />
+				<Settings2 />
 			</div>
 			<div
 				style={{

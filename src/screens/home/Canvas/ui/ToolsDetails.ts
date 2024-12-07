@@ -1,6 +1,6 @@
 export enum ToolsID {
 	grab,
-	cursor,
+	select,
 	text,
 	rectangle,
 	line,
@@ -40,9 +40,9 @@ export const ToolDetails: { [key in ToolsID]: ToolDetailType } = {
 		event: ToolEvents.select,
 		name: "Grab",
 	},
-	[ToolsID.cursor]: {
+	[ToolsID.select]: {
 		event: ToolEvents.select,
-		name: "Cursor",
+		name: "Select",
 	},
 	[ToolsID.text]: {
 		event: ToolEvents.text,
