@@ -8,9 +8,7 @@ export const renderLine = (
 	ctx?: CanvasRenderingContext2D | OffscreenCanvasRenderingContext2D,
 	roughCanvas?: RoughCanvas
 ) => {
-	if (!line) throw new Error("No line to draw");
-	if (!ctx) throw new Error("No context to draw");
-	if (!roughCanvas) throw new Error("No rough canvas to draw");
+	if (!line || !ctx || !roughCanvas) return;
 	const path: [number, number][] = [];
 	for (let j = 0; j < line.points.length; j++) {
 		path.push([line.points[j].x, line.points[j].y]);

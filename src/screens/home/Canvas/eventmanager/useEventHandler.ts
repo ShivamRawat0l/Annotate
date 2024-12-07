@@ -11,6 +11,7 @@ export const useEventHandler = (
 	const [toolSelected, setToolSelected] = useState<ToolDetailType>();
 	const [eventHandler, setEventHandler] = useState<EventHandler>();
 	const tools = useMemo(() => toolManager.fetchRegisteredTools(), []);
+	let removeEventListeners: (() => void)[] = [];
 
 	useEffect(() => {
 		if (!eventHandler) {
@@ -32,41 +33,32 @@ export const useEventHandler = (
 			toolSelected?.staticPermissions.includes(permission);
 		const dynamicPermission =
 			toolSelected?.dynamicPermissions.includes(permission);
-
 		if (staticPermission && dynamicPermission) {
-			dynamicRef.current?.addEventListener(
-				permission,
-				fn(CanvasType.both)
-			);
+			const func = fn(CanvasType.both);
+			dynamicRef.current?.addEventListener(permission, func);
+			removeEventListeners.push(() => {
+				dynamicRef.current?.removeEventListener(permission, func);
+			});
 		} else if (staticPermission) {
-			dynamicRef.current?.addEventListener(
-				permission,
-				fn(CanvasType.static)
-			);
+			const func = fn(CanvasType.static);
+			dynamicRef.current?.addEventListener(permission, func);
+			removeEventListeners.push(() => {
+				dynamicRef.current?.removeEventListener(permission, func);
+			});
 		} else if (dynamicPermission) {
-			dynamicRef.current?.addEventListener(
-				permission,
-				fn(CanvasType.dynamic)
-			);
-		} else {
-			dynamicRef.current?.removeEventListener(
-				permission,
-				fn(CanvasType.both)
-			);
-			dynamicRef.current?.removeEventListener(
-				permission,
-				fn(CanvasType.dynamic)
-			);
-			dynamicRef.current?.removeEventListener(
-				permission,
-				fn(CanvasType.static)
-			);
+			const func = fn(CanvasType.dynamic);
+			dynamicRef.current?.addEventListener(permission, func);
+			removeEventListeners.push(() => {
+				dynamicRef.current?.removeEventListener(permission, func);
+			});
 		}
 	};
 
 	useEffect(() => {
 		if (!eventHandler) return;
 		// NOTE: Not reading in the dismount because deregistering event in the else case
+		removeEventListeners.forEach((fn) => fn());
+		removeEventListeners = [];
 		registerEventIfPermission(
 			ToolEventPermissions.keydown,
 			(canvasType: CanvasType) => {
@@ -99,6 +91,9 @@ export const useEventHandler = (
 				};
 			}
 		);
+		return () => {
+			removeEventListeners.forEach((fn) => fn());
+		};
 	}, [toolSelected, eventHandler]);
 
 	return { toolSelected, onToolSelect, tools };

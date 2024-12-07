@@ -13,15 +13,13 @@ export enum ToolEventPermissions {
 }
 
 export abstract class StaticHandlerBaseClass {
-	abstract render(
-		ctx: OffscreenCanvasRenderingContext2D,
-		canvasProperties: CanvasProperties
-	): void;
+	abstract render(ctx: OffscreenCanvasRenderingContext2D): void;
 	abstract init(
 		canvasProperties?: CanvasProperties,
 		renderAll?: () => void,
 		postman?: Postman
 	): void;
+	abstract deinit(): void;
 	abstract onEvent(
 		toolEvent: ToolEventPermissions,
 		event: CapturedEvents

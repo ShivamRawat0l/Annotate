@@ -11,24 +11,29 @@ export class GrabStaticHandler extends StaticHandlerBaseClass {
 	private renderAll: (() => void) | undefined;
 	private ctx: OffscreenCanvasRenderingContext2D | undefined;
 
-	render(
-		ctx: OffscreenCanvasRenderingContext2D,
-		canvasProperties: CanvasProperties
-	) {
+	render(ctx: OffscreenCanvasRenderingContext2D) {
 		this.ctx = ctx;
 	}
+
+	deinit() {}
 
 	init(canvasProperties?: CanvasProperties, renderAll?: () => void) {
 		this.canvasProperties = canvasProperties;
 		this.renderAll = renderAll;
 	}
 
+	private registeredEvents: number = 0;
 	onEvent(toolEvent: ToolEventPermissions, event: CapturedEvents) {
 		switch (toolEvent) {
 			case ToolEventPermissions.mousedown:
 				this.isCanvasHolding = true;
 				break;
 			case ToolEventPermissions.mousemove:
+				this.registeredEvents++;
+				console.log(
+					"GrabStaticHandler registeredEvents",
+					this.registeredEvents
+				);
 				if (this.isCanvasHolding) {
 					this.onmousemove(event as MouseEvent);
 				}

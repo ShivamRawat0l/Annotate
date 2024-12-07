@@ -11,16 +11,13 @@ import { renderLine } from "./LineRenderer";
 
 export class LineStaticHandler extends StaticHandlerBaseClass {
 	private lines: Line[] = [];
+	private removeListener?: () => void;
 
 	private addLine = (line: Line) => {
 		this.lines.push(line);
-		console.log("LineStaticHandler addLine", this.lines);
 	};
 
-	render(
-		ctx: OffscreenCanvasRenderingContext2D,
-		canvasProperties: CanvasProperties
-	) {
+	render(ctx: OffscreenCanvasRenderingContext2D) {
 		const roughCanvas = rough.canvas(ctx);
 		for (let i = 0; i < this.lines.length; i++) {
 			renderLine(this.lines[i], ctx, roughCanvas);
@@ -29,15 +26,23 @@ export class LineStaticHandler extends StaticHandlerBaseClass {
 
 	onEvent(toolEvent: ToolEventPermissions, event: CapturedEvents): void {}
 
+	deinit() {
+		this.removeListener?.();
+	}
+
 	init(
 		canvasProperties: CanvasProperties,
 		renderAll?: () => void,
 		postman?: Postman
 	): void {
-		postman?.registerCanvasMessage((event: any) => {
+		this.removeListener = postman?.registerCanvasMessage((event: any) => {
 			if ("line" in event) {
 				const line = event.line;
 
+				line.points.forEach((point: any) => {
+					point.x -= canvasProperties.translateX;
+					point.y -= canvasProperties.translateY;
+				});
 				this.addLine(line);
 				renderAll?.();
 			}

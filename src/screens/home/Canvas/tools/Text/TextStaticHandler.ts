@@ -14,7 +14,6 @@ export class LineStaticHandler extends StaticHandlerBaseClass {
 
 	private addLine = (line: Line) => {
 		this.lines.push(line);
-		console.log("LineStaticHandler addLine", this.lines);
 	};
 	addText = (text: Text) => {
 		this.text.push(text);
