@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect, useState } from "react";
+import { createContext, useContext, useEffect, useMemo, useState } from "react";
 import {
   getUser,
   logoutUser,
@@ -8,7 +8,7 @@ import {
 import type { UserType } from "../types/notes.type";
 import { useFolder } from "./FolderProvider";
 import { createUser, getDBData, getUserDB } from "../appwrite/database";
-import { DATA_STORAGE_KEY } from "../constants/Constants";
+import { DATA_STORAGE_KEY, GUEST_USER_ID } from "../constants/Constants";
 
 type AuthenticationContextType = {
   user: UserType | null;
@@ -17,12 +17,9 @@ type AuthenticationContextType = {
   isLoading: boolean;
 };
 
-const AuthenticationContext = createContext<AuthenticationContextType>({
-  user: null,
-  googleLogin: () => {},
-  logout: () => {},
-  isLoading: true,
-});
+const AuthenticationContext = createContext<
+  AuthenticationContextType | undefined
+>(undefined);
 
 const AuthenticationProvider = ({
   children,
@@ -46,10 +43,7 @@ const AuthenticationProvider = ({
     const dataStorageKey = localStorage.getItem(DATA_STORAGE_KEY);
     if (dataStorageKey) {
       const data = JSON.parse(dataStorageKey);
-      if (
-        data.userEmail !== user.email &&
-        data.userEmail !== "__tempuser@temp.com__"
-      ) {
+      if (data.userEmail !== user.email && data.userEmail !== GUEST_USER_ID) {
         logout();
       } else if (
         Object.keys(data.folderDetails).length === 0 ||
@@ -95,10 +89,18 @@ const AuthenticationProvider = ({
     setUser(null);
   };
 
+  const contextValue = useMemo(
+    () => ({
+      user,
+      googleLogin,
+      logout,
+      isLoading,
+    }),
+    [user, isLoading]
+  );
+
   return (
-    <AuthenticationContext.Provider
-      value={{ user, googleLogin, logout, isLoading }}
-    >
+    <AuthenticationContext.Provider value={contextValue}>
       {children}
     </AuthenticationContext.Provider>
   );

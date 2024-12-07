@@ -1,42 +1,57 @@
 import Logo from "@/assets/icon.png";
-import { globalStyles } from "@/src/constants/Styles";
+import { getTheme } from "@/components/theme-provider";
+import { Colors } from "@/src/constants/Colors";
+import { globalStyles, type Style } from "@/src/constants/Styles";
+import { motion } from "framer-motion";
 
 export const ExploerHeader = () => {
-  return (
-    <div
-      style={{
-        ...globalStyles.flexRow,
-        flexShrink: 0,
-        flex: 0,
-        marginLeft: 16,
-        marginRight: 16,
-        marginTop: 12,
-        marginBottom: 12,
-        justifyContent: "space-between",
-        alignItems: "center",
-      }}
-    >
-      <div
-        style={{
-          fontSize: 20,
-          fontWeight: "bold",
-        }}
-      >
-        Annotate
-        <div style={{ fontSize: 12, color: "gray" }}>
-          A note taking app for everyone
-        </div>
-      </div>
-      <img
-        style={{
-          height: 60,
-          width: 60,
-        }}
-        src={Logo}
-        alt="Annotate"
-        height={60}
-        width={60}
-      />
-    </div>
-  );
+	const theme = getTheme();
+	return (
+		<div
+			style={{
+				...styles.explorerHeader,
+				backgroundColor: Colors[theme].background,
+			}}
+		>
+			<div>
+				<div style={styles.annotate}>Annotate</div>
+				<motion.div
+					style={styles.annotateDescription}
+					whileHover={{ color: Colors[theme].primary }}
+				>
+					A note taking app for everyone
+				</motion.div>
+			</div>
+			<img style={styles.logo} src={Logo} alt="Annotate" />
+		</div>
+	);
 };
+
+const styles: Style = Object.freeze({
+	logo: {
+		height: 68,
+		width: 68,
+	},
+	annotate: {
+		fontSize: 30,
+		fontFamily: "Recursive",
+		fontWeight: "900",
+	},
+	annotateDescription: {
+		fontSize: 18,
+		color: "gray",
+		fontFamily: "Schoolbell",
+		fontWeight: "300",
+	},
+	explorerHeader: {
+		...globalStyles.flexRow,
+		flexShrink: 0,
+		flex: 0,
+		marginLeft: 30,
+		marginRight: 30,
+		marginTop: 22,
+		marginBottom: 22,
+		justifyContent: "space-between",
+		alignItems: "center",
+	},
+});

@@ -1,6 +1,6 @@
 import { Permission, Role } from "appwrite";
 import { databases } from "./client";
-import type { UserType, FolderData } from "@/src/types/notes.type.ts";
+import type { UserType } from "@/src/types/notes.type.ts";
 
 const databaseId = process.env.APPWRITE_DATABASE_ID as string;
 const notesCollectionId = process.env.APPWRITE_NOTES_COLLECTION_ID as string;
