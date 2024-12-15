@@ -1,5 +1,3 @@
-// jsxDEV
-import { jsx } from "react/jsx-runtime";
 import { createRoot } from "react-dom/client";
 import App from "./src/screens/App";
 import "./index.css";
