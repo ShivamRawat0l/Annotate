@@ -28,5 +28,6 @@ export default defineConfig({
 		"process.env.APPWRITE_DATABASE_ID": `'${Bun.env.APPWRITE_DATABASE_ID}'`,
 		"process.env.APPWRITE_NOTES_COLLECTION_ID": `'${Bun.env.APPWRITE_NOTES_COLLECTION_ID}'`,
 		"process.env.APPWRITE_USER_COLLECTION_ID": `'${Bun.env.APPWRITE_USER_COLLECTION_ID}'`,
+		"process.env.BUN_ENV": `'${Bun.env.BUN_ENV}'`,
 	},
 });
