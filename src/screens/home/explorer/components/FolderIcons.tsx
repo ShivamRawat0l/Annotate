@@ -5,7 +5,7 @@ import { Folder } from "lucide-react";
 import { ExplorerConstants } from "../constants/ExplorerConstants";
 import { motion } from "framer-motion";
 import type { Style } from "@/src/constants/Styles";
-import { useFolder } from "@/src/context/FolderProvider";
+import { useFolder } from "../../FolderProvider";
 
 type FolderIconsProps = {
 	folderId: string;

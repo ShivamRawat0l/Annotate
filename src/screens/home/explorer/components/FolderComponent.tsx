@@ -1,6 +1,4 @@
 import { useCallback, useMemo, useRef } from "react";
-import { useExplorer } from "@/src/context/ExplorerProvider";
-import { useFolder } from "@/src/context/FolderProvider";
 import { ElementType, type FolderStructure } from "@/src/types/notes.type";
 import { motion, useMotionValue, useTransform } from "framer-motion";
 import { useState } from "react";
@@ -10,11 +8,13 @@ import { globalStyles, type Style } from "@/src/constants/Styles";
 import { ErrorBoundary } from "react-error-boundary";
 import { ExplorerConstants } from "../constants/ExplorerConstants";
 import { Colors } from "@/src/constants/Colors";
-import { getTheme } from "@/components/theme-provider";
 import { CollapseSubFolders } from "./CollapseSubFolders";
 import { SubFolders } from "./SubFolders";
 import { FolderOptions } from "./FolderOptions";
 import { FolderIcons } from "./FolderIcons";
+import { useFolder } from "../../FolderProvider";
+import { useExplorer } from "../ExplorerProvider";
+import { useTheme } from "@/src/theme/ThemeProvider";
 
 type FolderComponentProps = {
 	folderId: string;
@@ -39,7 +39,7 @@ export const FolderComponent = ({
 
 	const { folderEditing, setFolderEditing } = useExplorer();
 	const [hover, setHover] = useState(false);
-	const theme = getTheme();
+	const { theme } = useTheme();
 
 	const folderPath = useMemo(
 		() => [...parentId, folderId],
@@ -173,7 +173,7 @@ export const FolderComponent = ({
 									style={{
 										backgroundColor:
 											selectedFolderPath?.join("") ===
-											folderPath.join("")
+												folderPath.join("")
 												? Colors[theme].selected
 												: "transparent",
 										paddingLeft: padding,

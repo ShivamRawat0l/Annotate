@@ -1,16 +1,16 @@
 import { useRef } from "react";
-import { getTheme } from "@/components/theme-provider";
 import { motion, MotionValue } from "framer-motion";
 import useScreen from "@/src/hooks/useScreen";
 import { ToolBar } from "./ui/Toolbar";
 import { useEventHandler } from "@/src/screens/home/draw_atoms/event_manager/useEventHandler";
+import { useTheme } from "@/src/theme/ThemeProvider";
 
 type DrawAtomProps = {
 	sidebarWidth: MotionValue<number>;
 };
 
 export const DrawAtoms = ({ sidebarWidth }: DrawAtomProps) => {
-	const theme = getTheme();
+	const { theme } = useTheme()
 	const { SCREEN_HEIGHT } = useScreen();
 	const dynamicRef = useRef<HTMLCanvasElement>(null);
 	const staticRef = useRef<HTMLCanvasElement>(null);

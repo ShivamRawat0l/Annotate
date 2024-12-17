@@ -1,8 +1,8 @@
 import { createContext, useContext, useEffect, useMemo, useState } from "react";
-import { updateNote } from "../appwrite/database";
-import { useFolder } from "./FolderProvider";
-import { useAuth } from "./AuthenticationProvider";
-import { throttle } from "../utils/throttle";
+import { updateNote } from "@/src/appwrite/database";
+import { throttle } from "@/src/utils/throttle";
+import { useAuth } from "@/src/authentication/AuthenticationProvider";
+import { useFolder } from "../FolderProvider";
 
 type ExplorerContextType = {
 	folderEditing: string;

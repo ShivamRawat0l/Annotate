@@ -1,11 +1,10 @@
 import { globalStyles, type Style } from "@/src/constants/Styles";
-import { useExplorer } from "@/src/context/ExplorerProvider";
-import { useFolder } from "@/src/context/FolderProvider";
 import { Folder } from "lucide-react";
 import { NotebookPen } from "lucide-react";
 import { ExplorerConstants } from "../constants/ExplorerConstants";
 import { Colors } from "@/src/constants/Colors";
-import { getTheme } from "@/components/theme-provider";
+import { useFolder } from "../../FolderProvider";
+import { useTheme } from "@/src/theme/ThemeProvider";
 
 type FolderOptionsProps = {
 	hover: boolean;
@@ -19,7 +18,7 @@ export const FolderOptions = ({
 	subFolders,
 }: FolderOptionsProps) => {
 	const { createNewFolder, createNewNote } = useFolder();
-	const theme = getTheme();
+	const { theme } = useTheme();
 
 	return (
 		<div

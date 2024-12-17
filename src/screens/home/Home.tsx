@@ -1,31 +1,19 @@
-import {
-	Breadcrumb,
-	BreadcrumbItem,
-	BreadcrumbLink,
-	BreadcrumbList,
-	BreadcrumbPage,
-	BreadcrumbSeparator,
-} from "@/components/ui/breadcrumb";
-import { useFolder } from "@/src/context/FolderProvider";
 import { Colors } from "@/src/constants/Colors";
-import { getTheme } from "@/components/theme-provider";
 import { Toaster } from "@/components/ui/sonner";
 import { motion, MotionValue } from "framer-motion";
-import { Input } from "@/components/ui/input";
 import { globalStyles } from "@/src/constants/Styles";
-import { PinnedNotes } from "./components/PinnedNotes";
-import { SidebarClose, SidebarIcon, Slash } from "lucide-react";
-import React, { useMemo } from "react";
-import { useLayout } from "@/src/context/LayoutProvider";
+import { useMemo } from "react";
 import { DrawAtoms } from "./draw_atoms/DrawAtoms";
 import { ElementType } from "@/src/types/notes.type";
 import type { NoteType } from "@/src/types/notes.type";
 import { NOTES_SUFFIX } from "@/src/constants/Constants";
 import { HomeHeader } from "./HomeHeader";
+import { useFolder } from "./FolderProvider";
+import { useTheme } from "@/src/theme/ThemeProvider";
 
 const Home = ({ sidebarWidth }: { sidebarWidth: MotionValue<number> }) => {
 	const { selectedFolderPath, folderDetails } = useFolder();
-	const theme = getTheme();
+	const { theme } = useTheme();
 
 	const selectedNote: NoteType | undefined = useMemo(() => {
 		let selectedNoteId = selectedFolderPath.last;

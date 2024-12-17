@@ -1,11 +1,11 @@
 import Logo from "@/assets/icon.png";
-import { getTheme } from "@/components/theme-provider";
 import { Colors } from "@/src/constants/Colors";
 import { globalStyles, type Style } from "@/src/constants/Styles";
+import { useTheme } from "@/src/theme/ThemeProvider";
 import { motion } from "framer-motion";
 
 export const ExploerHeader = () => {
-	const theme = getTheme();
+	const { theme } = useTheme()
 	return (
 		<div
 			style={{

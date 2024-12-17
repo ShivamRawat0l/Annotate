@@ -7,10 +7,11 @@ import {
 	DialogTitle,
 } from "@/components/ui/dialog";
 import "./LoginPopup.css";
-import { useAuth } from "@/src/context/AuthenticationProvider";
 import { useEffect, useState, memo } from "react";
 import { LOGIN_POPUP_TIMEOUT } from "@/src/constants/Constants";
-import { GoogleButton } from "../explorer/components/components/GoogleButton";
+import { StorageButton } from "./components/StorageButton";
+import { GoogleButton } from "./components/GoogleButton";
+import { useAuth } from "@/src/authentication/AuthenticationProvider";
 
 export const LoginPopup = memo(() => {
 	const { user } = useAuth();
@@ -86,6 +87,7 @@ export const LoginPopup = memo(() => {
 					paddingTop: 20,
 				}}
 			>
+				<StorageButton onClick={googleLogin} />
 				<GoogleButton onClick={googleLogin} />
 				<div
 					className="dismiss"
@@ -98,7 +100,7 @@ export const LoginPopup = memo(() => {
 						fontFamily: "Josefin",
 					}}
 				>
-					I understand that my data wont be saved.
+					I understand that my data will be stored in browser and can be wiped out.
 				</div>
 			</div>
 		);

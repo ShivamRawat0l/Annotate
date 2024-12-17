@@ -1,17 +1,17 @@
 import { PlusSquare } from "lucide-react";
 import { useEffect, useState } from "react";
-import { getTheme, useTheme } from "@/components/theme-provider";
 import { ExploerHeader } from "./ExplorerHeader";
 import { ExplorerFooter } from "./ExplorerFooter";
 import { ExplorerFolders } from "./components/ExplorerFolder";
 import { globalStyles, type Style } from "@/src/constants/Styles";
-import { useExplorer } from "@/src/context/ExplorerProvider";
 import { Separator } from "@/components/ui/separator";
 import "./css/Scrollbar.css";
-import { useAuth } from "@/src/context/AuthenticationProvider";
+import { useAuth } from "@/src/authentication/AuthenticationProvider";
 import { ExplorerConstants } from "./constants/ExplorerConstants";
-import { useFolder } from "@/src/context/FolderProvider";
 import { Colors } from "@/src/constants/Colors";
+import { useExplorer } from "./ExplorerProvider";
+import { useFolder } from "../FolderProvider";
+import { useTheme } from "@/src/theme/ThemeProvider";
 
 export const Explorer = () => {
 	const {
@@ -25,7 +25,7 @@ export const Explorer = () => {
 	const { user } = useAuth();
 	const { folderEditing, setFolderEditing, syncNotesOnline } = useExplorer();
 
-	const theme = getTheme();
+	const { theme } = useTheme();
 
 	useEffect(() => {
 		document.addEventListener("keydown", authShortcuts);

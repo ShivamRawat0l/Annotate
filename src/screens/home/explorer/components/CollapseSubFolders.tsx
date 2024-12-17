@@ -1,8 +1,8 @@
-import { getTheme } from "@/components/theme-provider";
 import { Colors } from "@/src/constants/Colors";
 import type { Style } from "@/src/constants/Styles";
-import { useFolder } from "@/src/context/FolderProvider";
 import { ElementType, type FolderStructure } from "@/src/types/notes.type";
+import { useFolder } from "../../FolderProvider";
+import { useTheme } from "@/src/theme/ThemeProvider";
 
 type CollapseSubFoldersType = {
 	folderId: string;
@@ -20,7 +20,7 @@ export const CollapseSubFolders = ({
 	const { folderDetails, collapseSubFolders, selectedFolderPath } =
 		useFolder();
 
-	const theme = getTheme();
+	const { theme } = useTheme()
 
 	if (folderDetails[folderId].type === ElementType.NOTE) return null;
 	const hasExpandedSubFolders = Object.keys(subFolders).find(

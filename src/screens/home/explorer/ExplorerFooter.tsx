@@ -1,12 +1,13 @@
-import { useAuth } from "@/src/context/AuthenticationProvider";
 import { LogOutIcon, RefreshCcwDotIcon } from "lucide-react";
 import { globalStyles, type Style } from "@/src/constants/Styles";
 import { useEffect, useRef } from "react";
 import { motion } from "framer-motion";
-import { useExplorer } from "@/src/context/ExplorerProvider";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { ExplorerConstants } from "./constants/ExplorerConstants";
-import { GoogleButton } from "./components/components/GoogleButton";
+import { GoogleButton } from "../popup/components/GoogleButton";
+import { StorageButton } from "../popup/components/StorageButton";
+import { useAuth } from "@/src/authentication/AuthenticationProvider";
+import { useExplorer } from "./ExplorerProvider";
 
 const CustomRefreshCcwDotIcon = motion(RefreshCcwDotIcon);
 
@@ -23,6 +24,7 @@ export const ExplorerFooter = () => {
 		}
 	}, [isSyncing]);
 
+
 	const handleAnimationComplete = () => {
 		if (!isSyncing && isAnimating.current) {
 			isAnimating.current = false;
@@ -32,6 +34,12 @@ export const ExplorerFooter = () => {
 	const renderLogin = () => {
 		return (
 			<div style={styles.loginButton}>
+				<StorageButton
+					style={{
+						marginBottom: 20
+					}}
+					onClick={() => {
+					}} />
 				<GoogleButton onClick={googleLogin} />
 			</div>
 		);
@@ -98,10 +106,8 @@ export const ExplorerFooter = () => {
 
 const styles: Style = Object.freeze({
 	loginButton: {
-		...globalStyles.flexRow,
+		...globalStyles.flexColumn,
 		flex: 0,
-		alignItems: "center",
-		justifyContent: "center",
 		paddingTop: ExplorerConstants.PADDING_TOP_FOOTER,
 		paddingBottom: ExplorerConstants.PADDING_BOTTOM_FOOTER,
 		paddingLeft: ExplorerConstants.PADDING_LEFT_SIDEBAR,

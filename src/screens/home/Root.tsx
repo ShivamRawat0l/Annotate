@@ -1,41 +1,33 @@
-import { getTheme, ThemeProvider } from "@/components/theme-provider";
 import { motion, useMotionValue, useTransform } from "framer-motion";
 import { useEffect } from "react";
-import { TooltipProvider } from "@/components/ui/tooltip";
 import "@/src/utils/prototype";
-import { LayoutProvider, useLayout } from "@/src/context/LayoutProvider";
-import { FolderProvider } from "@/src/context/FolderProvider";
-import { AuthenticationProvider } from "@/src/context/AuthenticationProvider";
 import useScreen from "@/src/hooks/useScreen";
 import { DEFAULT_SIDEBAR_WIDTH } from "@/src/constants/Constants";
 import { Loading } from "./components/Loading";
 import { LoginPopup } from "./popup/LoginPopup";
-import { ExplorerProvider } from "@/src/context/ExplorerProvider";
 import { Explorer } from "./explorer/Explorer";
 import { Colors } from "@/src/constants/Colors";
-import Home from "./Home";
 import type { Style } from "@/src/constants/Styles";
+import { ExplorerProvider } from "./explorer/ExplorerProvider";
+import { LayoutProvider, useLayout } from "./LayoutProvider";
+import { FolderProvider } from "./FolderProvider";
+import { useTheme } from "@/src/theme/ThemeProvider";
+import Home from "./Home";
 
 export const Root = () => {
 	return (
-		<ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
-			<TooltipProvider>
-				<LayoutProvider>
-					<FolderProvider>
-						<AuthenticationProvider>
-							<ProviderWrapper />
-						</AuthenticationProvider>
-					</FolderProvider>
-				</LayoutProvider>
-			</TooltipProvider>
-		</ThemeProvider>
+		<LayoutProvider>
+			<FolderProvider>
+				<ProviderWrapper />
+			</FolderProvider>
+		</LayoutProvider>
 	);
 };
 
 const ProviderWrapper = () => {
 	const { sidebarOpen } = useLayout();
 	const { SCREEN_WIDTH } = useScreen();
-	const theme = getTheme();
+	const { theme } = useTheme()
 	const motionValue = useMotionValue(DEFAULT_SIDEBAR_WIDTH);
 	const remainingWidth = useTransform(
 		motionValue,

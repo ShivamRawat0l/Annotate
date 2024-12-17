@@ -1,7 +1,8 @@
 import { Settings2, GripVertical } from "lucide-react";
 import { Colors } from "@/src/constants/Colors";
-import { getTheme } from "@/components/theme-provider";
 import type { ToolDetailType } from "../tools/ToolManagerDynamic";
+import { Link } from "react-router";
+import { useTheme } from "@/src/theme/ThemeProvider";
 
 type RenderToolsProps = {
 	tools: ToolDetailType[];
@@ -14,7 +15,8 @@ export const ToolBar = ({
 	toolSelected,
 	onChangeToolSelected,
 }: RenderToolsProps) => {
-	const theme = getTheme();
+
+	const { theme } = useTheme()
 
 	return (
 		<div
@@ -46,14 +48,15 @@ export const ToolBar = ({
 					</div>
 				);
 			})}
-			<div
+			<Link
+				to="/settings"
 				style={{
 					padding: 10,
 					borderRadius: 5,
 				}}
 			>
 				<Settings2 />
-			</div>
-		</div>
+			</Link>
+		</div >
 	);
 };

@@ -1,21 +1,16 @@
 import { globalStyles, type Style } from "@/src/constants/Styles";
-import { useExplorer } from "@/src/context/ExplorerProvider";
-import { useFolder } from "@/src/context/FolderProvider";
 import { ElementType } from "@/src/types/notes.type";
 import { motion } from "framer-motion";
 import {
-	CircleSlash,
-	Dot,
-	Ellipsis,
 	FileText,
-	List,
 	Minus,
-	NotebookPen,
 } from "lucide-react";
 import { useMemo, useRef } from "react";
 import { ExplorerConstants } from "../constants/ExplorerConstants";
 import { Colors } from "@/src/constants/Colors";
-import { getTheme } from "@/components/theme-provider";
+import { useFolder } from "../../FolderProvider";
+import { useExplorer } from "../ExplorerProvider";
+import { useTheme } from "@/src/theme/ThemeProvider";
 
 type NoteBarProps = {
 	noteId: string;
@@ -28,7 +23,7 @@ export const NoteBar = ({ noteId, padding, parentId }: NoteBarProps) => {
 		useFolder();
 	const { folderEditing, setFolderEditing } = useExplorer();
 
-	const theme = getTheme();
+	const { theme } = useTheme()
 
 	const noteDetails = useMemo(() => folderDetails[noteId], [noteId]);
 	const ref = useRef<HTMLDivElement>(null);
@@ -77,7 +72,7 @@ export const NoteBar = ({ noteId, padding, parentId }: NoteBarProps) => {
 					gap: 10,
 					backgroundColor:
 						selectedFolderPath?.join("-") ===
-						[...parentId, noteId].join("-")
+							[...parentId, noteId].join("-")
 							? Colors[theme].selected
 							: "transparent",
 				}}
