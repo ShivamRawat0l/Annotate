@@ -1,0 +1,30 @@
+@font-face {
+	font-family: "Josefin";
+	src: url("./assets/fonts/Josefin.woff2") format("woff2");
+	font-weight: normal;
+	font-style: normal;
+	font-display: swap;
+}
+
+@font-face {
+	font-family: "Mononoki";
+	src: url("./assets/fonts/Mononoki.woff2");
+}
+
+@font-face {
+	font-family: "Recursive";
+	src: url("./assets/fonts/Recursive.woff2");
+}
+
+@font-face {
+	font-family: "Schoolbell";
+	src: url("./assets/fonts/Schoolbell.woff2");
+}
+
+@font-face {
+	font-family: "Work";
+	src: url("./assets/fonts/Work.woff2") format("woff2");
+	font-weight: normal;
+	font-style: normal;
+	font-display: swap;
+}

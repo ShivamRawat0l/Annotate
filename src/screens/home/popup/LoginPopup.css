@@ -1,0 +1,7 @@
+.dismiss {
+    cursor: "pointer";
+}
+
+.dismiss:hover {
+    text-decoration: underline;
+}
