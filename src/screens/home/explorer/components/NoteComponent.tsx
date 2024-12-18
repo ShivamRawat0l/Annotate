@@ -1,4 +1,4 @@
-import { globalStyles, type Style } from "@/src/constants/Styles";
+import { globalStyles, type Style } from "@/src/constants/styles";
 import { ElementType } from "@/src/types/notes.type";
 import { motion } from "framer-motion";
 import {
@@ -7,7 +7,7 @@ import {
 } from "lucide-react";
 import { useMemo, useRef } from "react";
 import { ExplorerConstants } from "../constants/ExplorerConstants";
-import { Colors } from "@/src/constants/Colors";
+import { Colors } from "@/src/theme/Colors";
 import { useFolder } from "../../FolderProvider";
 import { useExplorer } from "../ExplorerProvider";
 import { useTheme } from "@/src/theme/ThemeProvider";

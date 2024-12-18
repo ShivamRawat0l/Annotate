@@ -8,7 +8,7 @@ import {
 } from "@/components/ui/dialog";
 import "./LoginPopup.css";
 import { useEffect, useState, memo } from "react";
-import { LOGIN_POPUP_TIMEOUT } from "@/src/constants/Constants";
+import { LOGIN_POPUP_TIMEOUT } from "@/src/constants/constants";
 import { StorageButton } from "./components/StorageButton";
 import { GoogleButton } from "./components/GoogleButton";
 import { useAuth } from "@/src/authentication/AuthenticationProvider";

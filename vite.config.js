@@ -1,4 +1,3 @@
-import MillionLint from "@million/lint";
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 import { resolve } from "path";
@@ -16,9 +15,7 @@ export default defineConfig({
 		rollupOptions: {
 			output: {
 				manualChunks: {
-					// Group vendor dependencies into their own chunk
 					vendor: ["react", "react-dom"],
-					// You can add more manual chunks as needed
 				},
 			},
 		},

@@ -1,5 +1,5 @@
-import { Colors } from "@/src/constants/Colors";
-import type { Style } from "@/src/constants/Styles";
+import { Colors } from "@/src/theme/Colors";
+import type { Style } from "@/src/constants/styles";
 import { ElementType, type FolderStructure } from "@/src/types/notes.type";
 import { useFolder } from "../../FolderProvider";
 import { useTheme } from "@/src/theme/ThemeProvider";

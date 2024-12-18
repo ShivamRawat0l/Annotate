@@ -1,67 +1,44 @@
 import { useEffect, useState } from "react";
-import type { UserType } from "../types/notes.type";
-import { DATA_STORAGE_KEY, GUEST_USER_ID } from "../constants/Constants";
-import { createUser, getDBData, getUserDB } from "../appwrite/database";
-import { getUser, getUserData, loginWithGoogle, logoutUser } from "../appwrite/authentication";
+import { createUser, getUserDB } from "../appwrite/database";
+import { getLoggedUser, getUserData, loginWithGoogle, logoutUser } from "../appwrite/authentication";
+import { logger } from "../utils/logger";
+import type { UserType } from "./authentication.types";
 
 export const useAuthHook = () => {
-	const [user, setUser] = useState<UserType | null>(null);
-	const [isLoading, setIsLoading] = useState(true);
+	const [user, setUser] = useState<UserType | null>();
 
-	useEffect(() => {
-		checkLogin().then(() => {
-			setIsLoading(false);
-		});
-	}, []);
-
-	useEffect(() => {
-		if (!user) return;
-		const dataStorageKey = localStorage.getItem(DATA_STORAGE_KEY);
-		if (dataStorageKey) {
-			const data = JSON.parse(dataStorageKey);
-			if (
-				data.userEmail !== user.email &&
-				data.userEmail !== GUEST_USER_ID
-			) {
-				logout();
-			} else if (
-				Object.keys(data.folderDetails).length === 0 ||
-				Object.keys(data.folderStructure).length === 0
-			) {
-				fetchAppwriteFolders(user.id);
-			}
-		} else {
-			fetchAppwriteFolders(user.id);
-		}
-	}, [user]);
-
+	useEffect(() => { checkLogin() }, []);
 
 	const checkLogin = async () => {
 		try {
-			const user = await getUser();
+			const user = await getLoggedUser();
 			let userData = await getUserData(user);
 			try {
 				await createUser(user.$id, userData);
 			} catch {
-				console.log("User already exists");
+				logger.info("User already created")
 			}
 			const annotatedUser = await getUserDB(user.$id);
 			setUser(annotatedUser);
 		} catch (error) {
+			logger.error("Error occured when fetching user and userDB")
 			logout();
 		}
 	};
 
-	const googleLogin = async () => {
+	const login = async () => {
 		await loginWithGoogle();
 		await checkLogin();
 	};
 
 	const logout = async () => {
-		await logoutUser();
-		resetData();
-		setUser(null);
+		try {
+			await logoutUser();
+			setUser(null);
+		} catch {
+			logger.info("User logged out")
+		}
 	};
 
-	return { googleLogin, user, logout, isLoading }
+	return { login, user, logout }
 }

@@ -1,7 +1,7 @@
 import { HardDrive } from "lucide-react";
 import "./GoogleButton.css";
 import { memo, type CSSProperties } from "react";
-import type { Style } from "@/src/constants/Styles";
+import type { Style } from "@/src/constants/styles";
 
 type StorageButtonType = {
 	onClick: () => void;

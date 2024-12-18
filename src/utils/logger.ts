@@ -1,5 +1,5 @@
 class Logger {
-	log = (msg: string) => {
+	info = (msg: string) => {
 		console.log("[Info] ", msg)
 	}
 	error = (msg: string) => {

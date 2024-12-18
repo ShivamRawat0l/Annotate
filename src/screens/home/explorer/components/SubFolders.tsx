@@ -1,5 +1,5 @@
 import { CollapsibleContent } from "@/components/ui/collapsible";
-import { NOTES_SUFFIX } from "@/src/constants/Constants";
+import { NOTES_SUFFIX } from "@/src/constants/constants";
 import type { FolderStructure } from "@/src/types/notes.type";
 import { NoteBar } from "./NoteComponent";
 import { ExplorerFolders } from "./ExplorerFolder";

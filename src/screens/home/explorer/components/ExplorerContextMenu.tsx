@@ -5,7 +5,7 @@ import {
 	ContextMenuTrigger,
 } from "@/components/ui/context-menu";
 import { ContextMenuContent } from "@/components/ui/context-menu";
-import { globalStyles } from "@/src/constants/Styles";
+import { globalStyles } from "@/src/constants/styles";
 import { useFolder } from "../../FolderProvider";
 import { useExplorer } from "../ExplorerProvider";
 

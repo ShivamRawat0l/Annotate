@@ -1,5 +1,5 @@
 import { Settings2, GripVertical } from "lucide-react";
-import { Colors } from "@/src/constants/Colors";
+import { Colors } from "@/src/theme/Colors";
 import type { ToolDetailType } from "../tools/ToolManagerDynamic";
 import { Link } from "react-router";
 import { useTheme } from "@/src/theme/ThemeProvider";

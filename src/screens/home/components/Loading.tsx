@@ -1,7 +1,7 @@
 import { Progress } from "@/components/ui/progress";
-import { Colors } from "@/src/constants/Colors";
+import { Colors } from "@/src/theme/Colors";
 import { useMemo, useState, type CSSProperties } from "react";
-import type { Style } from "@/src/constants/Styles";
+import type { Style } from "@/src/constants/styles";
 import { useAuth } from "@/src/authentication/AuthenticationProvider";
 import { useFolder } from "../FolderProvider";
 import { useTheme } from "@/src/theme/ThemeProvider";

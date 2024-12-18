@@ -1,14 +1,13 @@
 // NOTE: This is the root of all the providers so every provider can access the useAuth hook
 
 import { createContext, useContext, useEffect, useMemo, useState } from "react";
-import type { UserType } from "../types/notes.type";
 import { useAuthHook } from "./useAuthHook";
+import type { UserType } from "./authentication.types";
 
 type AuthenticationContextType = {
-	user: UserType | null;
-	googleLogin: () => void;
+	user: UserType | null | undefined;
+	login: () => void;
 	logout: () => void;
-	isLoading: boolean;
 };
 
 const AuthenticationContext = createContext<
@@ -20,20 +19,14 @@ const AuthenticationProvider = ({
 }: {
 	children: React.ReactNode;
 }) => {
-	const { user, googleLogin, logout, isLoading } = useAuthHook();
-
-	const contextValue = useMemo(
-		() => ({
-			user,
-			googleLogin,
-			logout,
-			isLoading,
-		}),
-		[user, isLoading]
-	);
+	const { user, login, logout } = useAuthHook()
 
 	return (
-		<AuthenticationContext.Provider value={contextValue}>
+		<AuthenticationContext.Provider value={{
+			user,
+			login,
+			logout,
+		}}>
 			{children}
 		</AuthenticationContext.Provider>
 	);

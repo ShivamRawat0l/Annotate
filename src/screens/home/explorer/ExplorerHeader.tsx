@@ -1,6 +1,6 @@
 import Logo from "@/assets/icon.png";
-import { Colors } from "@/src/constants/Colors";
-import { globalStyles, type Style } from "@/src/constants/Styles";
+import { Colors } from "@/src/theme/Colors";
+import { globalStyles, type Style } from "@/src/constants/styles";
 import { useTheme } from "@/src/theme/ThemeProvider";
 import { motion } from "framer-motion";
 

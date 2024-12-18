@@ -12,14 +12,12 @@ import { ToolsID } from "../../ui/ToolsDetails";
 import { handleTextPrefix } from "./Utils/PrefixHandler";
 import { addStyleToHTML, renderDynamicText } from "./TextRenderer";
 import { drawCodeHTML } from "./Code/CodeHighliter";
-import { Pi } from "lucide-react";
 
 export class TextDynamicHandler extends DynamicHandlerBaseClass {
 	private postman: Postman | undefined;
 	private text: TextTool | undefined;
 	private preElement: HTMLPreElement | undefined;
 	private codeElement: HTMLPreElement | undefined;
-
 
 	render(ctx: CanvasRenderingContext2D, postman: Postman) {
 		this.postman = postman;

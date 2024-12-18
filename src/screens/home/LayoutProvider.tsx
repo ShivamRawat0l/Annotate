@@ -2,7 +2,7 @@ import { createContext, useContext, useMemo, useState } from "react";
 import {
 	DEFAULT_SIDEBAR_STATUS,
 	DEFAULT_SIDEBAR_WIDTH,
-} from "@/src/constants/Constants";
+} from "@/src/constants/constants";
 
 type LayoutContextType = {
 	sidebarWidth: number;

@@ -13,6 +13,7 @@ type CommonType = {
 
 export type NoteType = CommonType & {
 	type: ElementType.NOTE;
+	drawAtoms: string[]
 };
 
 export type FolderType = CommonType & {
@@ -31,9 +32,3 @@ export type FolderData = {
 	[key: string]: FolderType | NoteType;
 };
 
-export type UserType = {
-	id: string;
-	email: string;
-	name: string;
-	photoUrl: string;
-};

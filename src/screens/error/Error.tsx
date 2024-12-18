@@ -1,7 +1,7 @@
 import { lazy, Suspense, useEffect, useState } from 'react'
 import notFound from "@/assets/lottie/not-found.json"
 import { useTheme } from '@/src/theme/ThemeProvider';
-import { Colors } from '@/src/constants/Colors';
+import { Colors } from '@/src/theme/Colors';
 const Lottie = lazy(() => import('lottie-react'));
 
 export const Error = () => {

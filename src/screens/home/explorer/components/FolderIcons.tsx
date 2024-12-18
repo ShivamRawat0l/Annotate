@@ -4,7 +4,7 @@ import { ElementType } from "@/src/types/notes.type";
 import { Folder } from "lucide-react";
 import { ExplorerConstants } from "../constants/ExplorerConstants";
 import { motion } from "framer-motion";
-import type { Style } from "@/src/constants/Styles";
+import type { Style } from "@/src/constants/styles";
 import { useFolder } from "../../FolderProvider";
 
 type FolderIconsProps = {

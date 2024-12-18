@@ -1,11 +1,11 @@
-import { globalStyles } from "@/src/constants/Styles";
+import { globalStyles } from "@/src/constants/styles";
 
 import {
 	Popover,
 	PopoverContent,
 	PopoverTrigger,
 } from "@/components/ui/popover";
-import { Colors } from "@/src/constants/Colors";
+import { Colors } from "@/src/theme/Colors";
 import { NotebookPenIcon, Trash2Icon } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useTheme } from "@/src/theme/ThemeProvider";

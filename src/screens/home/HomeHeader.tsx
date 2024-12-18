@@ -3,7 +3,7 @@ import { SidebarClose, SidebarIcon } from "lucide-react";
 import React from "react";
 import { PinnedNotes } from "./components/PinnedNotes";
 import { Input } from "@/components/ui/input";
-import { globalStyles } from "@/src/constants/Styles";
+import { globalStyles } from "@/src/constants/styles";
 import { useLayout } from "./LayoutProvider";
 import { useFolder } from "./FolderProvider";
 

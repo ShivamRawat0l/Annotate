@@ -8,8 +8,6 @@ type StorageContextType = {
 	restore: () => void,
 } | undefined
 
-
-
 const StorageContext = React.createContext<StorageContextType>(undefined)
 
 export const StorageProvider = ({ children }: { children: ReactElement }) => {

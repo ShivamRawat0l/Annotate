@@ -6,19 +6,12 @@ import {
 	useRef,
 	useState,
 } from "react";
-import {
-	ElementType,
-	type FolderData,
-	type FolderPath,
-	type FolderStructure,
-	type FolderType,
-	type NoteType,
-} from "@/src/types/notes.type";
 import { toast } from "sonner";
 import { uuidv7 } from "uuidv7";
-import { DATA_STORAGE_KEY, GUEST_USER_ID } from "@/src/constants/Constants";
+import { DATA_STORAGE_KEY, GUEST_USER_ID } from "@/src/constants/constants";
 import { getChainedObject } from "@/src/utils/array";
 import { getDBData } from "@/src/appwrite/database";
+import type { FolderData, FolderStructure } from "@/src/storage/storage.types";
 
 type FolderContextType = {
 	folderStructure: FolderStructure;

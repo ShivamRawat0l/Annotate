@@ -1,5 +1,5 @@
 import { LogOutIcon, RefreshCcwDotIcon } from "lucide-react";
-import { globalStyles, type Style } from "@/src/constants/Styles";
+import { globalStyles, type Style } from "@/src/constants/styles";
 import { useEffect, useRef } from "react";
 import { motion } from "framer-motion";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
