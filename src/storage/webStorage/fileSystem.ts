@@ -1,5 +1,5 @@
 import { logger } from "@/src/utils/logger"
-import { LocalStorage } from "./LocalStorage"
+import { LocalStorage } from "./localStorage"
 
 class FileSystem {
 	private annotateHandle: FileSystemFileHandle | undefined
@@ -17,11 +17,11 @@ class FileSystem {
 		for await (const entry of dir.values()) {
 			throw new Error("Directory not empty")
 		}
-		const annotateHandle = await dir.getFileHandle("annotate.json", { create: true })
-		const configHandle = await dir.getFileHandle("config.json", { create: true })
+		const annotateStructureHandle = await dir.getFileHandle("annotateStructure.json", { create: true })
+		const annotateDetailsHandle = await dir.getFileHandle("annotateDetails.json", { create: true })
 		const profileHandle = await dir.getFileHandle("profile.json", { create: true })
 		const preferencesHandle = await dir.getFileHandle("preferences.json", { create: true })
-		LocalStorage.saveFileHandlers(annotateHandle, configHandle, preferencesHandle, profileHandle)
+		LocalStorage.saveFileHandlers(annotateStructureHandle, annotateDetailsHandle, preferencesHandle, profileHandle)
 	}
 
 	public async saveAnnotateData() {

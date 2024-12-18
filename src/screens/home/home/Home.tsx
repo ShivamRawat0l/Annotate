@@ -1,12 +1,12 @@
-import { Colors } from "@/src/theme/Colors";
+import { Colors } from "@/src/theme/colors";
 import { Toaster } from "@/components/ui/sonner";
 import { motion, MotionValue } from "framer-motion";
 import { globalStyles } from "@/src/constants/styles";
 import { useMemo } from "react";
-import { DrawAtoms } from "./draw_atoms/DrawAtoms";
+import { DrawAtoms } from "../draw_atoms/DrawAtoms";
 import { NOTES_SUFFIX } from "@/src/constants/constants";
 import { HomeHeader } from "./HomeHeader";
-import { useFolder } from "./FolderProvider";
+import { useFolder } from "../FolderProvider";
 import { useTheme } from "@/src/theme/ThemeProvider";
 import { ElementType, type NoteType } from "@/src/storage/storage.types";
 

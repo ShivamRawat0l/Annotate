@@ -1,6 +1,6 @@
-import { type FolderStructure } from "@/src/types/notes.type";
 import { memo } from "react";
 import { FolderComponent } from "./FolderComponent";
+import type { FolderStructure } from "@/src/storage/storage.types";
 
 type ExplorerFoldersType = {
 	folders: FolderStructure;

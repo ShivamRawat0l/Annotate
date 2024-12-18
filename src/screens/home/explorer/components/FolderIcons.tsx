@@ -1,11 +1,11 @@
 import { ChevronRight, FolderOpen, Folders } from "lucide-react";
 
-import { ElementType } from "@/src/types/notes.type";
 import { Folder } from "lucide-react";
 import { ExplorerConstants } from "../constants/ExplorerConstants";
 import { motion } from "framer-motion";
 import type { Style } from "@/src/constants/styles";
 import { useFolder } from "../../FolderProvider";
+import { ElementType } from "@/src/storage/storage.types";
 
 type FolderIconsProps = {
 	folderId: string;

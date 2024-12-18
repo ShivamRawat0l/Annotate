@@ -2,17 +2,17 @@ import { motion, useMotionValue, useTransform } from "framer-motion";
 import { useEffect } from "react";
 import "@/src/utils/prototype";
 import useScreen from "@/src/hooks/useScreen";
-import { DEFAULT_SIDEBAR_WIDTH } from "@/src/constants/constants";
 import { Loading } from "./components/Loading";
 import { LoginPopup } from "./popup/LoginPopup";
 import { Explorer } from "./explorer/Explorer";
-import { Colors } from "@/src/theme/Colors";
+import { Colors } from "@/src/theme/colors";
 import type { Style } from "@/src/constants/styles";
 import { ExplorerProvider } from "./explorer/ExplorerProvider";
 import { LayoutProvider, useLayout } from "./LayoutProvider";
 import { FolderProvider } from "./FolderProvider";
 import { useTheme } from "@/src/theme/ThemeProvider";
-import Home from "./Home";
+import Home from "./home/Home";
+import { useStorage } from "@/src/storage/StorageContext";
 
 export const Root = () => {
 	return (
@@ -25,10 +25,11 @@ export const Root = () => {
 };
 
 const ProviderWrapper = () => {
+	const { preferences } = useStorage()
 	const { sidebarOpen } = useLayout();
 	const { SCREEN_WIDTH } = useScreen();
 	const { theme } = useTheme()
-	const motionValue = useMotionValue(DEFAULT_SIDEBAR_WIDTH);
+	const motionValue = useMotionValue(preferences.sideBarDefaultWidth);
 	const remainingWidth = useTransform(
 		motionValue,
 		(value) => SCREEN_WIDTH - value - 4
@@ -36,7 +37,7 @@ const ProviderWrapper = () => {
 
 	useEffect(() => {
 		if (sidebarOpen) {
-			motionValue.set(DEFAULT_SIDEBAR_WIDTH);
+			motionValue.set(preferences.sideBarDefaultWidth);
 		} else {
 			motionValue.set(0);
 		}

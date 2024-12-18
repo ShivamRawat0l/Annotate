@@ -1,8 +1,8 @@
-import { Colors } from "@/src/theme/Colors";
+import { Colors } from "@/src/theme/colors";
 import type { Style } from "@/src/constants/styles";
-import { ElementType, type FolderStructure } from "@/src/types/notes.type";
 import { useFolder } from "../../FolderProvider";
 import { useTheme } from "@/src/theme/ThemeProvider";
+import { ElementType, type FolderStructure } from "@/src/storage/storage.types";
 
 type CollapseSubFoldersType = {
 	folderId: string;

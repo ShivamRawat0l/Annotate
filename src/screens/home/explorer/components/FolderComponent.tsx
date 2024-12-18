@@ -1,5 +1,4 @@
 import { useCallback, useMemo, useRef } from "react";
-import { ElementType, type FolderStructure } from "@/src/types/notes.type";
 import { motion, useMotionValue, useTransform } from "framer-motion";
 import { useState } from "react";
 import { Collapsible, CollapsibleTrigger } from "@/components/ui/collapsible";
@@ -7,7 +6,7 @@ import { ExplorerContextMenu } from "./ExplorerContextMenu";
 import { globalStyles, type Style } from "@/src/constants/styles";
 import { ErrorBoundary } from "react-error-boundary";
 import { ExplorerConstants } from "../constants/ExplorerConstants";
-import { Colors } from "@/src/theme/Colors";
+import { Colors } from "@/src/theme/colors";
 import { CollapseSubFolders } from "./CollapseSubFolders";
 import { SubFolders } from "./SubFolders";
 import { FolderOptions } from "./FolderOptions";
@@ -15,6 +14,7 @@ import { FolderIcons } from "./FolderIcons";
 import { useFolder } from "../../FolderProvider";
 import { useExplorer } from "../ExplorerProvider";
 import { useTheme } from "@/src/theme/ThemeProvider";
+import { ElementType, type FolderStructure } from "@/src/storage/storage.types";
 
 type FolderComponentProps = {
 	folderId: string;

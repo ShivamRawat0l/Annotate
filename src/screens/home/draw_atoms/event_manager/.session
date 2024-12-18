@@ -1,0 +1,88 @@
+let SessionLoad = 1
+let s:so_save = &g:so | let s:siso_save = &g:siso | setg so=0 siso=0 | setl so=-1 siso=-1
+let v:this_session=expand("<sfile>:p")
+silent only
+silent tabonly
+cd ~/Developer/Annotate
+if expand('%') == '' && !&modified && line('$') <= 1 && getline(1) == ''
+  let s:wipebuf = bufnr('%')
+endif
+let s:shortmess_save = &shortmess
+if &shortmess =~ 'A'
+  set shortmess=aoOA
+else
+  set shortmess=aoO
+endif
+badd +11 output.css
+badd +56 src/storage/useStorageHook.tsx
+badd +60 src/screens/home/FolderProvider.tsx
+badd +43 src/appwrite/database.ts
+badd +39 src/storage/storage.types.ts
+badd +2 src/storage/webStorage/localStorage.ts
+badd +12 src/constants/constants.ts
+badd +29 src/authentication/AuthenticationProvider.tsx
+badd +22 src/authentication/useAuthHook.tsx
+badd +1 src/appwrite/authentication.ts
+badd +0 ~/Developer/Annotate
+badd +25 src/storage/webStorage/FileSystem.ts
+badd +22 src/screens/App.tsx
+badd +54 src/screens/home/Root.tsx
+badd +43 src/screens/home/Home.tsx
+badd +9 src/screens/home/home/Home.tsx
+badd +12 src/screens/home/home/HomeHeader.tsx
+badd +1 src/utils/prototype.ts
+badd +14 index.html
+badd +12 index.tsx
+badd +1 src/storage/storage.worker.ts
+badd +10 node_modules/sonner/dist/index.d.ts
+badd +14 src/types/notes.type.ts
+badd +35 src/storage/StorageContext.tsx
+badd +32 src/storage/defaultStorage.ts
+badd +1 src/screens/home/explorer/ExplorerProvider.tsx
+badd +55 src/screens/home/components/PinnedNotes.tsx
+badd +2 src/screens/home/explorer/components/ExplorerFolder.css
+badd +1 src/screens/home/explorer/ExplorerFooter.tsx
+badd +6 src/screens/home/explorer/components/ExplorerFolder.tsx
+badd +210 src/screens/home/explorer/components/FolderComponent.tsx
+badd +111 src/screens/home/explorer/components/NoteComponent.tsx
+badd +19 src/screens/home/explorer/components/FolderIcons.tsx
+badd +10 src/screens/home/explorer/components/CollapseSubFolders.tsx
+badd +27 src/screens/home/LayoutProvider.tsx
+argglobal
+%argdel
+$argadd ~/Developer/Annotate
+edit src/screens/home/FolderProvider.tsx
+argglobal
+balt src/screens/home/LayoutProvider.tsx
+setlocal fdm=manual
+setlocal fde=0
+setlocal fmr={{{,}}}
+setlocal fdi=#
+setlocal fdl=0
+setlocal fml=1
+setlocal fdn=20
+setlocal fen
+silent! normal! zE
+let &fdl = &fdl
+let s:l = 60 - ((24 * winheight(0) + 24) / 49)
+if s:l < 1 | let s:l = 1 | endif
+keepjumps exe s:l
+normal! zt
+keepjumps 60
+normal! 0
+lcd ~/Developer/Annotate/src/screens/home/draw_atoms/event_manager
+tabnext 1
+if exists('s:wipebuf') && len(win_findbuf(s:wipebuf)) == 0 && getbufvar(s:wipebuf, '&buftype') isnot# 'terminal'
+  silent exe 'bwipe ' . s:wipebuf
+endif
+unlet! s:wipebuf
+set winheight=1 winwidth=20
+let &shortmess = s:shortmess_save
+let s:sx = expand("<sfile>:p:r")."x.vim"
+if filereadable(s:sx)
+  exe "source " . fnameescape(s:sx)
+endif
+let &g:so = s:so_save | let &g:siso = s:siso_save
+doautoall SessionLoadPost
+unlet SessionLoad
+" vim: set ft=vim :

@@ -1,6 +1,7 @@
 import { Permission, Role } from "appwrite";
 import { databases } from "./client";
 import type { UserType } from "../authentication/authentication.types";
+import type { AnnotateData } from "../storage/storage.types";
 
 const databaseId = process.env.APPWRITE_DATABASE_ID as string;
 const notesCollectionId = process.env.APPWRITE_NOTES_COLLECTION_ID as string;
@@ -33,23 +34,16 @@ export const getUserDB: (userId: string) => Promise<UserType> = async (
 	};
 };
 
-export const getDBData = async (userId: string) => {
+export const getDBData = async (userId: string): Promise<AnnotateData> => {
 	const notes = await databases.getDocument(
 		databaseId,
 		notesCollectionId,
 		userId
 	);
-	try {
-		return {
-			structure: JSON.parse(notes.structure),
-			details: JSON.parse(notes.details),
-		};
-	} catch (error) {
-		return {
-			structure: {},
-			details: {},
-		};
-	}
+	return {
+		folderStructure: JSON.parse(notes.structure),
+		folderDetails: JSON.parse(notes.details),
+	};
 };
 
 const createUserDocument = async (userId: string, user: UserType) => {

@@ -1,5 +1,4 @@
 import { globalStyles, type Style } from "@/src/constants/styles";
-import { ElementType } from "@/src/types/notes.type";
 import { motion } from "framer-motion";
 import {
 	FileText,
@@ -7,10 +6,11 @@ import {
 } from "lucide-react";
 import { useMemo, useRef } from "react";
 import { ExplorerConstants } from "../constants/ExplorerConstants";
-import { Colors } from "@/src/theme/Colors";
+import { Colors } from "@/src/theme/colors";
 import { useFolder } from "../../FolderProvider";
 import { useExplorer } from "../ExplorerProvider";
 import { useTheme } from "@/src/theme/ThemeProvider";
+import { ElementType } from "@/src/storage/storage.types";
 
 type NoteBarProps = {
 	noteId: string;

@@ -13,34 +13,33 @@ if &shortmess =~ 'A'
 else
   set shortmess=aoO
 endif
-badd +5 src/screens/home/Root.tsx
-badd +23 ~/Developer/Annotate/src/screens/App.tsx
-badd +1 ~/Developer/Annotate/src/appwrite/client.ts
-badd +1 ~/Developer/Annotate/src/appwrite/authentication.ts
-badd +20 ~/Developer/Annotate/src/storage/StorageContext.tsx
-badd +71 ~/Developer/Annotate/src/storage/WebStorage/FileSystem.ts
-badd +18 ~/Developer/Annotate/src/storage/useStorageHook.tsx
-badd +5 src/authentication/AuthenticationProvider.tsx
-badd +1 ~/Developer/Annotate/todo.md
-badd +3 ~/Developer/Annotate/.philosophy
-badd +1 ~/Developer/Annotate/.million/store.json
-badd +22 ~/Developer/Annotate/tsconfig.json
-badd +27 ~/Developer/Annotate/vite.config.js
-badd +2 ~/Developer/Annotate/tailwind.config.js
-badd +1 ~/Developer/Annotate/package.json
-badd +2 ~/Developer/Annotate/output.css
-badd +0 ~/Developer/Annotate/src/storage/WeebStorage/FileSystem.ts
-badd +1 ~/Developer/Annotate/src/storage/default_storage.ts
-badd +1 ~/Developer/Annotate/src/storage/storage.types.ts
-badd +0 ~/Developer/Annotate/src/storage/webStorage/LocalStorage.ts
-badd +1 ~/Developer/Annotate/src/storage/defaultStorage.ts
+badd +11 ~/Developer/Annotate/output.css
+badd +1 src/storage/useStorageHook.tsx
+badd +16 src/screens/home/FolderProvider.tsx
+badd +43 ~/Developer/Annotate/src/appwrite/database.ts
+badd +62 ~/Developer/Annotate/src/storage/storage.types.ts
+badd +48 ~/Developer/Annotate/src/storage/webStorage/localStorage.ts
+badd +12 ~/Developer/Annotate/src/constants/constants.ts
+badd +5 ~/Developer/Annotate/src/authentication/AuthenticationProvider.tsx
+badd +22 src/authentication/useAuthHook.tsx
+badd +1 src/appwrite/authentication.ts
+badd +1 ./
+badd +15 ~/Developer/Annotate/src/screens/App.tsx
+badd +5 ~/Developer/Annotate/src/screens/home/Root.tsx
+badd +3 ~/Developer/Annotate/src/storage/delete.ts
 argglobal
 %argdel
-$argadd oil:///Users/shivamrawat/Developer/Annotate/
+$argadd ./
+edit src/screens/home/FolderProvider.tsx
+wincmd t
+let s:save_winminheight = &winminheight
+let s:save_winminwidth = &winminwidth
+set winminheight=0
+set winheight=1
+set winminwidth=0
+set winwidth=1
 argglobal
-enew
-file oil:///Users/shivamrawat/Developer/Annotate/src/storage/
-balt src/authentication/AuthenticationProvider.tsx
+balt src/storage/useStorageHook.tsx
 setlocal fdm=manual
 setlocal fde=0
 setlocal fmr={{{,}}}
@@ -49,6 +48,14 @@ setlocal fdl=0
 setlocal fml=1
 setlocal fdn=20
 setlocal fen
+silent! normal! zE
+let &fdl = &fdl
+let s:l = 13 - ((12 * winheight(0) + 24) / 49)
+if s:l < 1 | let s:l = 1 | endif
+keepjumps exe s:l
+normal! zt
+keepjumps 13
+normal! 0
 tabnext 1
 if exists('s:wipebuf') && len(win_findbuf(s:wipebuf)) == 0 && getbufvar(s:wipebuf, '&buftype') isnot# 'terminal'
   silent exe 'bwipe ' . s:wipebuf
@@ -56,11 +63,14 @@ endif
 unlet! s:wipebuf
 set winheight=1 winwidth=20
 let &shortmess = s:shortmess_save
+let &winminheight = s:save_winminheight
+let &winminwidth = s:save_winminwidth
 let s:sx = expand("<sfile>:p:r")."x.vim"
 if filereadable(s:sx)
   exe "source " . fnameescape(s:sx)
 endif
 let &g:so = s:so_save | let &g:siso = s:siso_save
+nohlsearch
 doautoall SessionLoadPost
 unlet SessionLoad
 " vim: set ft=vim :

@@ -1,11 +1,11 @@
 import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbSeparator } from "@/components/ui/breadcrumb";
 import { SidebarClose, SidebarIcon } from "lucide-react";
 import React from "react";
-import { PinnedNotes } from "./components/PinnedNotes";
 import { Input } from "@/components/ui/input";
 import { globalStyles } from "@/src/constants/styles";
-import { useLayout } from "./LayoutProvider";
-import { useFolder } from "./FolderProvider";
+import { useLayout } from "../LayoutProvider";
+import { PinnedNotes } from "../components/PinnedNotes";
+import { useFolder } from "../FolderProvider";
 
 export const HomeHeader = () => {
 	const { sidebarOpen, setSidebarOpen } = useLayout();

@@ -1,8 +1,5 @@
+import { useStorage } from "@/src/storage/StorageContext";
 import { createContext, useContext, useMemo, useState } from "react";
-import {
-	DEFAULT_SIDEBAR_STATUS,
-	DEFAULT_SIDEBAR_WIDTH,
-} from "@/src/constants/constants";
 
 type LayoutContextType = {
 	sidebarWidth: number;
@@ -13,8 +10,9 @@ type LayoutContextType = {
 const LayoutContext = createContext<LayoutContextType | undefined>(undefined);
 
 export const LayoutProvider = ({ children }: { children: React.ReactNode }) => {
-	const [sidebarOpen, setSidebarOpen] = useState(DEFAULT_SIDEBAR_STATUS);
-	const sidebarWidth = DEFAULT_SIDEBAR_WIDTH;
+	const { preferences } = useStorage()
+	const [sidebarOpen, setSidebarOpen] = useState(preferences.sideBarOpenByDefault);
+	const sidebarWidth = preferences.sideBarDefaultWidth;
 
 	const contextValue = useMemo(
 		() => ({ sidebarWidth, sidebarOpen, setSidebarOpen }),

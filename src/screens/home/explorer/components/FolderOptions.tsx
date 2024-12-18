@@ -2,7 +2,7 @@ import { globalStyles, type Style } from "@/src/constants/styles";
 import { Folder } from "lucide-react";
 import { NotebookPen } from "lucide-react";
 import { ExplorerConstants } from "../constants/ExplorerConstants";
-import { Colors } from "@/src/theme/Colors";
+import { Colors } from "@/src/theme/colors";
 import { useFolder } from "../../FolderProvider";
 import { useTheme } from "@/src/theme/ThemeProvider";
 

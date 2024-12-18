@@ -10,13 +10,11 @@ import { toast } from "sonner";
 import { uuidv7 } from "uuidv7";
 import { DATA_STORAGE_KEY, GUEST_USER_ID } from "@/src/constants/constants";
 import { getChainedObject } from "@/src/utils/array";
-import { getDBData } from "@/src/appwrite/database";
-import type { FolderData, FolderStructure } from "@/src/storage/storage.types";
+import { ElementType, type FolderData, type FolderStructure, type FolderType, type NoteType } from "@/src/storage/storage.types";
 
 type FolderContextType = {
 	folderStructure: FolderStructure;
 	setFolderStructure: React.Dispatch<React.SetStateAction<FolderStructure>>;
-	resetData: () => void;
 	createNewFolder: (folderPath: string[]) => void;
 	createNewNote: (folderPath: string[]) => void;
 	deleteFolder: (folderPath: string[]) => void;
@@ -42,49 +40,6 @@ const FolderProvider = ({ children }: { children: React.ReactNode }) => {
 	const [selectedFolderPath, setSelectedFolderPath] = useState<string[]>([]);
 	const [userEmail, setUserEmail] = useState<string>(GUEST_USER_ID);
 
-	useEffect(() => {
-		loadConfig();
-		loadData();
-		setTimeout(() => {
-			setIsLoading(false);
-		}, 100);
-	}, []);
-
-	useEffect(() => {
-		saveFolderData();
-	}, [folderStructure, folderDetails]);
-
-	const saveConfig = () => {
-		localStorage.setItem("config", JSON.stringify({}));
-	};
-
-	const saveFolderData = () => {
-		localStorage.setItem(
-			DATA_STORAGE_KEY,
-			JSON.stringify({ folderStructure, folderDetails, userEmail })
-		);
-	};
-
-	const loadConfig = async () => {
-		const config = localStorage.getItem("config");
-	};
-
-	const loadData = () => {
-		const data = localStorage.getItem(DATA_STORAGE_KEY);
-		if (data) {
-			const fetchedData = JSON.parse(data);
-			setUserEmail(fetchedData.userEmail);
-			setFolderStructure(fetchedData.folderStructure);
-			setFolderDetails(fetchedData.folderDetails);
-		}
-	};
-
-	const resetData = () => {
-		setFolderStructure({});
-		setFolderDetails({});
-		setSelectedFolderPath([]);
-		localStorage.clear();
-	};
 
 	const collapseSubFolders = (folderPath: FolderPath) => {
 		const subFolders = getChainedObject(folderStructure, folderPath);
@@ -178,17 +133,11 @@ const FolderProvider = ({ children }: { children: React.ReactNode }) => {
 		setFolderStructure({ ...folderStructure });
 	};
 
-	const fetchAppwriteFolders = async (userId: string) => {
-		const notes = await getDBData(userId);
-		setFolderStructure(notes.structure);
-		setFolderDetails(notes.details);
-	};
 
 	const contextValue = useMemo(
 		() => ({
 			folderStructure,
 			setFolderStructure,
-			resetData,
 			createNewFolder,
 			createNewNote,
 			deleteFolder,

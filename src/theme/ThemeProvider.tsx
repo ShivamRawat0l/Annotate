@@ -1,5 +1,5 @@
 import React, { useContext, useState } from "react"
-import type { ThemeColors } from "./Colors"
+import type { ThemeColors } from "./colors"
 
 type ThemeContextType = {
 	theme: keyof ThemeColors,

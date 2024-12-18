@@ -1,10 +1,5 @@
 import { GUEST_USER_ID } from "../constants/constants";
-import type { AnnotateData, Configuration, Preferences, Profile } from "./storage.types";
-
-export const DEFAULT_CONFIG_STORAGE: Configuration = {
-	isUsingGoogleStorage: false,
-	isUsingLocalStorage: false
-}
+import type { AnnotateData, Preferences, Profile } from "./storage.types";
 
 export const DEFAULT_PREFERENCE_STORAGE: Preferences = {
 	sideBarOpenByDefault: true,
@@ -33,5 +28,5 @@ export const DEFAULT_PROFILE_STORAGE: Profile = {
 
 export const DEFAULT_ANNOTATE_STORAGE: AnnotateData = {
 	folderStructure: {},
-	folderData: {}
+	folderDetails: {}
 }

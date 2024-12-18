@@ -8,7 +8,7 @@ import { Separator } from "@/components/ui/separator";
 import "./css/Scrollbar.css";
 import { useAuth } from "@/src/authentication/AuthenticationProvider";
 import { ExplorerConstants } from "./constants/ExplorerConstants";
-import { Colors } from "@/src/theme/Colors";
+import { Colors } from "@/src/theme/colors";
 import { useExplorer } from "./ExplorerProvider";
 import { useFolder } from "../FolderProvider";
 import { useTheme } from "@/src/theme/ThemeProvider";

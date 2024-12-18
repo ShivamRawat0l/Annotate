@@ -29,7 +29,7 @@ export type FolderStructure = {
 
 export type FolderPath = string[];
 
-export type FolderData = {
+export type FolderDetails = {
 	[key: string]: FolderType | NoteType;
 
 };
@@ -60,10 +60,6 @@ export type Profile = {
 
 export type AnnotateData = {
 	folderStructure: FolderStructure,
-	folderData: FolderData
+	folderDetails: FolderDetails
 }
 
-export type Configuration = {
-	isUsingGoogleStorage: boolean,
-	isUsingLocalStorage: boolean,
-}

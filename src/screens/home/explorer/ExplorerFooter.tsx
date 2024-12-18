@@ -8,11 +8,12 @@ import { GoogleButton } from "../popup/components/GoogleButton";
 import { StorageButton } from "../popup/components/StorageButton";
 import { useAuth } from "@/src/authentication/AuthenticationProvider";
 import { useExplorer } from "./ExplorerProvider";
+import { useStorage } from "@/src/storage/StorageContext";
 
 const CustomRefreshCcwDotIcon = motion(RefreshCcwDotIcon);
 
 export const ExplorerFooter = () => {
-	const { user, googleLogin, logout } = useAuth();
+	const { user, logout, login } = useAuth();
 	const { isSyncing, syncNotesOnline } = useExplorer();
 	const isAnimating = useRef(false);
 
@@ -40,7 +41,7 @@ export const ExplorerFooter = () => {
 					}}
 					onClick={() => {
 					}} />
-				<GoogleButton onClick={googleLogin} />
+				<GoogleButton onClick={login} />
 			</div>
 		);
 	};

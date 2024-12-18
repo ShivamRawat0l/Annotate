@@ -1,10 +1,10 @@
-import { CONFIG_HANDLE_KEY, DATA_HANDLE_KEY, DATA_STORAGE_KEY, PREFERENCES_HANDLE_KEY, PROFILE_HANDLE_KEY } from "@/src/constants/constants"
+import { DETAILS_HANDLE_KEY, STRUCTURE_HANDLE_KEY, DATA_STORAGE_KEY, PREFERENCES_HANDLE_KEY, PROFILE_HANDLE_KEY } from "@/src/constants/constants"
 import type { AnnotateData } from "../storage.types"
 import { logger } from "@/src/utils/logger"
 
 type FileHandlers = {
-	annotateHandle: FileSystemFileHandle
-	configHandle: FileSystemFileHandle
+	annotateDetailsHandle: FileSystemFileHandle
+	annotateStructureHandle: FileSystemFileHandle
 	profileHandle: FileSystemFileHandle
 	preferencesHandle: FileSystemFileHandle
 }
@@ -23,33 +23,30 @@ export abstract class LocalStorage {
 			logger.info("Annotate Data not present")
 			return {
 				folderStructure: {},
-				folderData: {}
+				folderDetails: {}
 			}
 		}
 	}
 
 	public static saveFileHandlers(annotate: FileSystemFileHandle, config: FileSystemFileHandle, preferences: FileSystemFileHandle, profile: FileSystemFileHandle) {
-		localStorage.setItem(DATA_HANDLE_KEY, JSON.stringify(annotate))
-		localStorage.setItem(CONFIG_HANDLE_KEY, JSON.stringify(config))
+		localStorage.setItem(DETAILS_HANDLE_KEY, JSON.stringify(annotate))
+		localStorage.setItem(STRUCTURE_HANDLE_KEY, JSON.stringify(annotate))
 		localStorage.setItem(PROFILE_HANDLE_KEY, JSON.stringify(profile))
 		localStorage.setItem(PREFERENCES_HANDLE_KEY, JSON.stringify(preferences))
 	}
 
 	public static getFileHandlers(): FileHandlers {
-		const annotateData = localStorage.getItem(DATA_HANDLE_KEY)
-		const configData = localStorage.getItem(CONFIG_HANDLE_KEY)
+		const annotateDetails = localStorage.getItem(DETAILS_HANDLE_KEY)
+		const annotateStructure = localStorage.getItem(STRUCTURE_HANDLE_KEY)
 		const profileData = localStorage.getItem(PROFILE_HANDLE_KEY)
 		const preferencesData = localStorage.getItem(PREFERENCES_HANDLE_KEY)
-		if (!annotateData || !configData || !profileData || !preferencesData) throw new Error("Handles not found")
-		const annotateHandle = JSON.parse(annotateData)
+		if (!annotateDetails || !annotateStructure || !profileData || !preferencesData) throw new Error("Handles not found")
+		const annotateDetailsHandle = JSON.parse(annotateDetails)
+		const annotateStructureHandle = JSON.parse(annotateStructure)
 		const preferencesHandle = JSON.parse(preferencesData)
 		const profileHandle = JSON.parse(profileData)
-		const configHandle = JSON.parse(configData)
 		return {
-			annotateHandle,
-			configHandle,
-			profileHandle,
-			preferencesHandle
+			annotateDetailsHandle, preferencesHandle, profileHandle, annotateStructureHandle
 		}
 	}
 }

@@ -5,7 +5,7 @@ import {
 	PopoverContent,
 	PopoverTrigger,
 } from "@/components/ui/popover";
-import { Colors } from "@/src/theme/Colors";
+import { Colors } from "@/src/theme/colors";
 import { NotebookPenIcon, Trash2Icon } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useTheme } from "@/src/theme/ThemeProvider";
